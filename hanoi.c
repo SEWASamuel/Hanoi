@@ -79,8 +79,7 @@ Bool disquePresent(THanoi *hanoi, int colonne){
 // but : obtenir le niveau auquel on peut placer un disque
 int hauteurPossible(THanoi *hanoi, int colonne){
 
-    int hauteur = NULL;
-
+    int hauteur = -1; // j'ai mis -1 car avec "NULL", ça marchait pas lors de la compilation
     Bool existe = FALSE;
 
     int i = 0;
