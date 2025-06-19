@@ -105,10 +105,14 @@ void deplacerDisque(THanoi *hanoi, int posQuilleDepart, int PosQuilleDestination
 
 void main(void){
 
+    // main est un test
+
     THanoi hanoi;
 
+    // on initialise le jeu du hanoi
     initTHanoi(&hanoi);
 
+    // on affiche le jeu du janoi qu'on vient de tester pour voir si il es bien initialisé
     afficherHanoi(&hanoi);
 
     exit(0);
