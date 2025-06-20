@@ -10,6 +10,11 @@ void erreur(char *message){
     fprintf(stderr, "Erreur : %s \n", message);
 }
 
+// but : mettre un peu de graphisme sur des titres pour afficher les dans la console
+void annonce(char *message){
+    printf("****************************************************************\n\t%s\n****************************************************************\n", message);
+}
+
 // on va "créer" le type de variable : booleen
 typedef int Bool;
 
@@ -76,20 +81,27 @@ Bool disquePresent(THanoi *hanoi, int colonne){
     return present;
 }
 
-// but : obtenir le niveau auquel on peut placer un disque
-int hauteurPossible(THanoi *hanoi, int colonne){
+// but : obtenir le niveau auquel on peut placer un disque selon la colonne(quille) passée en paramètre
+int hauteurPlacementQuillePossible(THanoi *hanoi, int colonne){
 
-    int hauteur = -1; // j'ai mis -1 car avec "NULL", ça marchait pas lors de la compilation
-    Bool existe = FALSE;
+    int i = 0; // on initialise le compteur à 0
 
-    int i = 0;
-
-    while(i<NB_DISQUES-1 && hanoi->objet[i][colonne] == 0){
-        // TODO
-        existe = FALSE;
+    while((i < NB_DISQUES) && (hanoi->objet[i][colonne] == 0)){ // condition : on a pas dépassé la hauteur des quilles et  à la hauteur du compteur on na pas de disques
         i++;
     }
 
+    return i-1; // on retourne la valeur du nombre de cases vides consecutives qu'on a rencontrées
+}
+
+// but : obtenir le niveau auquel on peut retirer un disque selon la colonne(quille) passée en paramètre
+int hauteurRetraitQuillePossible(THanoi *hanoi, int colonne){
+    int i = 0; // on initialise la compteur à 0
+
+    while(i < NB_DISQUES-1 && (hanoi->objet[i][colonne] == 0)){
+        i++;
+    }
+
+    return i;// on retourne la valeur de la hauteur du disque le plus élvevé
 }
 
 // savoir si un disque "a" est plus petit qu'un disque "b"
@@ -113,7 +125,21 @@ void main(void){
     initTHanoi(&hanoi);
 
     // on affiche le jeu du janoi qu'on vient de tester pour voir si il es bien initialisé
+    annonce("TEST : affichage de la tour de hanoi");
     afficherHanoi(&hanoi);
+
+
+    // on evalue la hauteur de olacements possibles sur toutes les quilles du hanoi
+    annonce("test de : hauteurPlacementQuillePossible");
+    printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,0));
+    printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,1));
+    printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,2));
+
+    // on evalue la hauteur de olacements possibles sur toutes les quilles du hanoi
+    annonce("test de : hauteurretraitQuillePossible");
+    printf("voici la hauteur de la quille 1 : %d\n", hauteurRetraitQuillePossible(&hanoi,0));
+    printf("voici la hauteur de la quille 1 : %d\n", hauteurRetraitQuillePossible(&hanoi,1));
+    printf("voici la hauteur de la quille 1 : %d\n", hauteurRetraitQuillePossible(&hanoi,1));
 
     exit(0);
 }
