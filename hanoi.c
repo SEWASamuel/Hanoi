@@ -10,6 +10,7 @@ void erreur(char *message){
     fprintf(stderr, "Erreur : %s \n", message);
 }
 
+
 // but : mettre un peu de graphisme sur des titres pour afficher les dans la console
 void annonce(char *message){
     printf("****************************************************************\n\t%s\n****************************************************************\n", message);
