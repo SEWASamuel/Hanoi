@@ -5,9 +5,15 @@
 #define TRUE 1
 #define FALSE 0
 
-// but : quitter le programme en cas d'erreur et afficher un message
+// but : afficher un message d'erreur personnalidé dans la console 
 void erreur(char *message){
     fprintf(stderr, "Erreur : %s \n", message);
+}
+
+// but : en plus d'afficher le message d'erreur dans la console, on quitte le programme
+void erreurQuitter(char *message){
+    fprintf(stderr, "Erreur : %s \n", message);
+    exit(1);
 }
 
 
@@ -82,18 +88,6 @@ Bool disquePresent(THanoi *hanoi, int colonne){
     return present;
 }
 
-// but : obtenir le niveau auquel on peut placer un disque selon la colonne(quille) passée en paramètre
-int hauteurPlacementQuillePossible(THanoi *hanoi, int colonne){
-
-    int i = 0; // on initialise le compteur à 0
-
-    while((i < NB_DISQUES) && (hanoi->objet[i][colonne] == 0)){ // condition : on a pas dépassé la hauteur des quilles et  à la hauteur du compteur on na pas de disques
-        i++;
-    }
-
-    return i-1; // on retourne la valeur du nombre de cases vides consecutives qu'on a rencontrées
-}
-
 // but : obtenir le niveau auquel on peut retirer un disque selon la colonne(quille) passée en paramètre
 int hauteurRetraitQuillePossible(THanoi *hanoi, int colonne){
     int i = 0; // on initialise la compteur à 0
@@ -105,14 +99,94 @@ int hauteurRetraitQuillePossible(THanoi *hanoi, int colonne){
     return i;// on retourne la valeur de la hauteur du disque le plus élvevé
 }
 
+// but : obtenir le niveau auquel on peut placer un disque selon la colonne(quille) passée en paramètre
+int hauteurPlacementQuillePossible(THanoi *hanoi, int colonne){
+
+    int i = 0; // on initialise le compteur à 0
+
+    while((i < NB_DISQUES) && (hanoi->objet[i][colonne] == 0)){ // condition : on a pas dépassé la hauteur des quilles et  à la hauteur du compteur on na pas de disques
+        i++;
+    }
+
+    return i-1; // on retourne le niveau de hauteur du dernier emplacement vide
+}
+
 // savoir si un disque "a" est plus petit qu'un disque "b"
 Bool plusPetit(int a, int b){
     return a<b;
 }
 
+// but : verifier qu'on peut deplacer un disque donné à une destinstion donnée
+Bool DeplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination){
+    /**
+     * On va verifier qu'on peut déplacer un disque d'une quille à un autre
+     * il faut que :
+     *  La quille de depatr ne soit pas la même que la quille de dstination
+     *  Il y ait au moins un disque sur le quille de départ
+     *  Il y ait de la place sur la quille de destination
+     *  Le disque de depart ne soit pas mis au dessus d'un disque plus grand
+     */
+
+    Bool possible = TRUE;
+
+    int hauteurRetrait = hauteurRetraitQuillePossible(hanoi, quilleDepart);
+    int hauteurPlacement = hauteurPlacementQuillePossible(hanoi, quilleDestination);
+
+
+    if(hauteurRetrait < 0 || hauteurRetrait > NB_DISQUES-1){// il faut que la quille soit entre 0 et le NB_QUILLES-1
+        possible = FALSE;
+        erreur("La hauteur de retrait possible n'est pas valide");
+        printf("la hauteur de retrait obtenue par la fonction est : %d", hauteurRetrait);
+    }
+
+    if(hauteurPlacement < 0 || hauteurPlacement > NB_QUILLES-1){
+        possible = FALSE;
+        erreur("La hauteur de placement possible n'est pas valide");
+        printf("la hauteur de placement obtenue par la fonction est : %d", hauteurPlacement);
+    }
+
+    if(quilleDepart == quilleDestination){
+        possible = FALSE;
+        erreur("la quille de depart est la même que la quille de destination");
+        printf("Quille de depart : %d\nQuille de destination : %d\n", quilleDepart, quilleDestination);
+    }
+
+    int valeurDisqueRetire = hanoi->objet[hauteurRetrait][quilleDepart];
+    int valeurDisqueDestinationSupport = hanoi->objet[hauteurPlacement+1][quilleDestination];
+
+    if(!(hauteurPlacement > NB_QUILLES-1)){ // si la quille de destination n'est pas vide
+        if(valeurDisqueRetire > valeurDisqueDestinationSupport){ // "hauteurPlacement+1" parce qu'on veut la valeur du disque qui va être en dessosus du diasque qu'on va déplacer
+        // TODO : evaluer le cas ou la quille de destination est vide. On n'aurait donc aucun disque de support à verifier
+        possible = FALSE;
+        erreur("le disque a deplacer est plus grand que le disque sur lequel on le pose");
+        printf("Valeur du disque de départ : %d\nValeur du disque de support de destination : %d\n", valeurDisqueRetire, valeurDisqueDestinationSupport);
+        }
+    }
+
+    return possible;
+}
+
 // but : deplacer le disque d'une quille à une autre
-void deplacerDisque(THanoi *hanoi, int posQuilleDepart, int PosQuilleDestination){
-    //TODO
+void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
+    /**
+     * On va verifier qu'on peut déplacer un disque d'une quille à un autre
+     * il faut que :
+     *  Il y ait au moins un disque sur le quille de départ
+     *  Il y ait de la place sur la quille de destination
+     *  Le disque de depart ne soit pas mis au dessus d'un disque plus grand
+     */
+
+    if(DeplacementPossible(hanoi, quilleDepart, quilleDestination) == TRUE){
+        printf("Deplacement possible! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
+        int hauteurRetrait = hauteurRetraitQuillePossible(hanoi, quilleDepart);
+        int hauteurPlacement = hauteurPlacementQuillePossible(hanoi, quilleDestination);
+
+        int aux = hanoi->objet[hauteurRetrait][quilleDepart];
+        hanoi->objet[hauteurRetrait][quilleDepart] = 0;
+        hanoi->objet[hauteurPlacement][quilleDestination] = aux;
+    }else{
+        printf("Deplacement impossible! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
+    }
 }
 
 
@@ -130,17 +204,54 @@ void main(void){
     afficherHanoi(&hanoi);
 
 
-    // on evalue la hauteur de olacements possibles sur toutes les quilles du hanoi
+    // on evalue la hauteur de placements possibles sur toutes les quilles du hanoi
     annonce("test de : hauteurPlacementQuillePossible");
     printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,0));
     printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,1));
     printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,2));
 
-    // on evalue la hauteur de olacements possibles sur toutes les quilles du hanoi
-    annonce("test de : hauteurretraitQuillePossible");
-    printf("voici la hauteur de la quille 1 : %d\n", hauteurRetraitQuillePossible(&hanoi,0));
-    printf("voici la hauteur de la quille 1 : %d\n", hauteurRetraitQuillePossible(&hanoi,1));
-    printf("voici la hauteur de la quille 1 : %d\n", hauteurRetraitQuillePossible(&hanoi,1));
+    // // on va tester un deplacement de la quille n°1 à la Quille n°2 (normalement possible)
+    // annonce("Test d'un deplacement de la quille 1 a la quille 2 (possible)");
+    // deplacerDisque(&hanoi, 0, 1);
+    // afficherHanoi(&hanoi);
+
+    // // on va tester un deplacement de la quille n°1 à la Quille n°2 (normalement possible)
+    // annonce("Test d'un deplacement de la quille 1 a la quille 3 (possible)");
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
+
+    // // on va tester un deplacement de la quille n°1 à la Quille n°2 (normalement impossible)
+    // annonce("Test d'un deplacement de la quille 1 a la quille 3 (impossible)");
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
+
+    // // on va tester un deplacement de la quille n°2 à la Quille n°3 (normalement possible)
+    // annonce("Test d'un deplacement de la quille 1 a la quille 3 (possible)");
+    // deplacerDisque(&hanoi, 1, 2);
+    // afficherHanoi(&hanoi);
+
+    annonce("test de resolution du jeu manuellement");
+
+    deplacerDisque(&hanoi, 0, 2);
+    afficherHanoi(&hanoi);
+
+    deplacerDisque(&hanoi, 0, 1);
+    afficherHanoi(&hanoi);
+
+    deplacerDisque(&hanoi, 2, 1);
+    afficherHanoi(&hanoi);
+
+    deplacerDisque(&hanoi, 0, 2);
+    afficherHanoi(&hanoi);
+
+    deplacerDisque(&hanoi, 1, 0);
+    afficherHanoi(&hanoi);
+
+    deplacerDisque(&hanoi, 1, 2);
+    afficherHanoi(&hanoi);
+
+    deplacerDisque(&hanoi, 0, 2);
+    afficherHanoi(&hanoi);
 
     exit(0);
 }
