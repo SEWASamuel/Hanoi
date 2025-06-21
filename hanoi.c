@@ -5,7 +5,7 @@
 #define TRUE 1
 #define FALSE 0
 
-// but : afficher un message d'erreur personnalidé dans la console 
+// but : afficher un message d'erreur personnalidé dans la console
 void erreur(char *message){
     fprintf(stderr, "Erreur : %s \n", message);
 }
@@ -116,6 +116,32 @@ Bool plusPetit(int a, int b){
     return a<b;
 }
 
+Bool quilleVide(THanoi *hanoi, int numQuille){
+
+    Bool vide = TRUE;
+
+    int i =0;
+
+    while((i<NB_QUILLES) && (vide == TRUE)){
+        if(hanoi->objet[i][numQuille] != 0){
+            vide = FALSE;
+        }
+        i++;
+    }
+
+    return vide;
+}
+
+Bool afficherBool(Bool b){
+    if(b == TRUE){
+        printf("TRUE\n");
+    }else if(b == FALSE){
+        printf("FALSE\n");
+    }else{
+        printf("Booleen invalide\n");
+    }
+}
+
 // but : verifier qu'on peut deplacer un disque donné à une destinstion donnée
 Bool DeplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination){
     /**
@@ -177,7 +203,7 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
      */
 
     if(DeplacementPossible(hanoi, quilleDepart, quilleDestination) == TRUE){
-        printf("Deplacement possible! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
+        printf("\nDeplacement possible! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
         int hauteurRetrait = hauteurRetraitQuillePossible(hanoi, quilleDepart);
         int hauteurPlacement = hauteurPlacementQuillePossible(hanoi, quilleDestination);
 
@@ -185,7 +211,7 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
         hanoi->objet[hauteurRetrait][quilleDepart] = 0;
         hanoi->objet[hauteurPlacement][quilleDestination] = aux;
     }else{
-        printf("Deplacement impossible! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
+        printf("\nDEPLACEMENT IMPOSSIBLE!!!!!! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
     }
 }
 
@@ -230,28 +256,37 @@ void main(void){
     // deplacerDisque(&hanoi, 1, 2);
     // afficherHanoi(&hanoi);
 
-    annonce("test de resolution du jeu manuellement");
 
-    deplacerDisque(&hanoi, 0, 2);
-    afficherHanoi(&hanoi);
+    // // test de resolution manuelle de la tour de hanoi
+    // annonce("test de resolution du jeu manuellement");
 
-    deplacerDisque(&hanoi, 0, 1);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 2, 1);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 1);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 0, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 2, 1);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 1, 0);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 1, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 1, 0);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 0, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 1, 2);
+    // afficherHanoi(&hanoi);
+
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
+
+    printf("La quille 1 est vide :");
+    afficherBool(quilleVide(&hanoi, 0));
+    printf("La quille 2 est vide :");
+    afficherBool(quilleVide(&hanoi, 1));
+    printf("La quille 3 est vide :");
+    afficherBool(quilleVide(&hanoi, 2));
 
     exit(0);
 }
