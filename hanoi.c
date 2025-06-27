@@ -60,6 +60,7 @@ void afficherHanoi(THanoi *hanoi){
     printf("\nTour de hanoi :\n\n");
 
     for(int i=0 ; i<NB_DISQUES ; i++){
+        printf("\t");
         for(int j=0 ; j<NB_QUILLES ; j++){
 
             if(hanoi->objet[i][j] == 0){ // dans l'affichage, on remplacera les "0" par des "|"
@@ -217,6 +218,50 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
     }
 }
 
+// but : vérifier si le jeu du hanoi est résolu
+Bool HanoiResolu(THanoi *hanoi){
+    Bool resolu = TRUE;
+
+    /**
+     * on va parcourir les cases de la dernière colonne de la matrice (c-à-d les niveaux de la dernière quille du hanoi)
+     * Pour ceci, on va  se servir d'un compteur i.
+     * Et pour chaque iteration de i, on va vérfier si la valeur de la case parcourue est égale à i+1.
+     * "i+1" car "i" commence avec la valeur 0
+     * Si au moins un disque n'est pas au bon niveau, le booléen "resolu" devient faux
+     */
+
+    for(int i=0 ; i<NB_DISQUES ; i++){
+        if(i+1 != hanoi->objet[i][NB_QUILLES-1]){
+            resolu = FALSE;
+        }
+    }
+
+    return resolu;
+}
+
+void resolutionHanoiManuelle3x3(THanoi *hanoi){
+    deplacerDisque(hanoi, 0, 2);
+    afficherHanoi(hanoi);
+
+    deplacerDisque(hanoi, 0, 1);
+    afficherHanoi(hanoi);
+
+    deplacerDisque(hanoi, 2, 1);
+    afficherHanoi(hanoi);
+
+    deplacerDisque(hanoi, 0, 2);
+    afficherHanoi(hanoi);
+
+    deplacerDisque(hanoi, 1, 0);
+    afficherHanoi(hanoi);
+
+    deplacerDisque(hanoi, 1, 2);
+    afficherHanoi(hanoi);
+
+    deplacerDisque(hanoi, 0, 2);
+    afficherHanoi(hanoi);
+}
+
 
 void main(void){
 
@@ -227,16 +272,16 @@ void main(void){
     // on initialise le jeu du hanoi
     initTHanoi(&hanoi);
 
-    // on affiche le jeu du janoi qu'on vient de tester pour voir si il es bien initialisé
-    annonce("TEST : affichage de la tour de hanoi");
-    afficherHanoi(&hanoi);
+    // // on affiche le jeu du janoi qu'on vient de tester pour voir si il es bien initialisé
+    // annonce("TEST : affichage de la tour de hanoi");
+    // afficherHanoi(&hanoi);
 
 
-    // on evalue la hauteur de placements possibles sur toutes les quilles du hanoi
-    annonce("test de : hauteurPlacementQuillePossible");
-    printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,0));
-    printf("voici la hauteur de la quille 2 : %d\n", hauteurPlacementQuillePossible(&hanoi,1));
-    printf("voici la hauteur de la quille 3 : %d\n", hauteurPlacementQuillePossible(&hanoi,2));
+    // // on evalue la hauteur de placements possibles sur toutes les quilles du hanoi
+    // annonce("test de : hauteurPlacementQuillePossible");
+    // printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(&hanoi,0));
+    // printf("voici la hauteur de la quille 2 : %d\n", hauteurPlacementQuillePossible(&hanoi,1));
+    // printf("voici la hauteur de la quille 3 : %d\n", hauteurPlacementQuillePossible(&hanoi,2));
 
     // // on va tester un deplacement de la quille n°1 à la Quille n°2 (normalement possible)
     // annonce("Test d'un deplacement de la quille 1 a la quille 2 (possible)");
@@ -259,36 +304,55 @@ void main(void){
     // afficherHanoi(&hanoi);
 
 
-    // test de resolution manuelle de la tour de hanoi
-    annonce("test de resolution du jeu manuellement");
+    // // test de resolution manuelle de la tour de hanoi
+    // annonce("test de resolution du jeu manuellement");
 
-    deplacerDisque(&hanoi, 0, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 0, 1);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 1);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 2, 1);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 2, 1);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 0, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 1, 0);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 1, 0);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 1, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 1, 2);
+    // afficherHanoi(&hanoi);
 
-    deplacerDisque(&hanoi, 0, 2);
-    afficherHanoi(&hanoi);
+    // deplacerDisque(&hanoi, 0, 2);
+    // afficherHanoi(&hanoi);
 
+    // // Test de la fonction : quilleVide
     // printf("La quille 1 est vide :");
     // afficherBool(quilleVide(&hanoi, 0));
     // printf("La quille 2 est vide :");
     // afficherBool(quilleVide(&hanoi, 1));
     // printf("La quille 3 est vide :");
     // afficherBool(quilleVide(&hanoi, 2));
+
+    // Test de la fonction : hanoiResolu
+    annonce("test : hanoiResolu");
+    afficherHanoi(&hanoi);
+
+    if(HanoiResolu(&hanoi)){
+        printf("Hanoi valde!\n");
+    }else{
+        printf("Hanoi NON valide!\n");
+    }
+
+    resolutionHanoiManuelle3x3(&hanoi);
+
+    if(HanoiResolu(&hanoi)){
+        printf("Hanoi valde!\n");
+    }else{
+        printf("Hanoi NON valide!\n");
+    }
 
     exit(0);
 }
