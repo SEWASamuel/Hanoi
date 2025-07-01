@@ -144,7 +144,7 @@ Bool afficherBool(Bool b){
 }
 
 // but : verifier qu'on peut deplacer un disque donné à une destinstion donnée
-Bool DeplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination){
+Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination){
     /**
      * On va verifier qu'on peut déplacer un disque d'une quille à un autre
      * il faut que :
@@ -205,7 +205,7 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
      *  Le disque de depart ne soit pas mis au dessus d'un disque plus grand
      */
 
-    if(DeplacementPossible(hanoi, quilleDepart, quilleDestination) == TRUE){
+    if(deplacementPossible(hanoi, quilleDepart, quilleDestination) == TRUE){
         printf("\nDeplacement possible! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
         int hauteurRetrait = hauteurRetraitQuillePossible(hanoi, quilleDepart);
         int hauteurPlacement = hauteurPlacementQuillePossible(hanoi, quilleDestination);
@@ -262,6 +262,59 @@ void resolutionHanoiManuelle3x3(THanoi *hanoi){
     afficherHanoi(hanoi);
 }
 
+void ResolutionHanoiRecursif(){
+   //TODO  
+}
+
+// but : faie saisir un entier à l'utilisateur
+int demandeSaisieEntier(char *message){
+    int a;
+    printf("%s ", message);
+    scanf("%d", &a);
+
+    return a;
+}
+
+// but : faire jouer l'utilisateur
+void jouer(){
+    printf("Bienvenu au jeu du Hanoi!\nPour deplacer les disques : saisissez le numero de la quille ou vous voulez retirer le disque et ensuite le numero de la quille ou vous voulez le poser\n\n");
+    // on créé l'objet et on l'initialise
+    THanoi hanoi;
+    THanoi *pHanoi = &hanoi;
+    initTHanoi(pHanoi);
+
+    printf("voici le disposition initiale\n");
+    afficherHanoi(pHanoi);
+
+    // ces deux entiers serviront au choix de deplacement de l'utilisateur
+    int quilleDep;
+    int quilleDest;
+
+
+    // on fait une boucle qui se répète tant que le hanoi n'est pas résolus
+    while(!HanoiResolu(pHanoi)){
+        /**
+         * à faire :
+         * - faire saisir une quille de depart et de destination à l'utilisateur
+         * - faire verifier si c'est possible
+         *      -> si c'est possible, on la refait saisir
+         *      -> sinon on effectue le dplacement et on affiche les tours
+         *   On repete le processus jusqu'à ce que le hanoi soit résolu ou que l'utilisateur quitte le programme
+         */
+
+        do{
+            quilleDep = demandeSaisieEntier("Saisissez la quille d'ou vous voulez retirer le disque :") - 1;
+            quilleDest = demandeSaisieEntier("Saisissez la quille ou vous voulez poser le disque :") - 1;
+        }while(!deplacementPossible(pHanoi, quilleDep, quilleDest));
+
+        deplacerDisque(pHanoi, quilleDep, quilleDest);
+        afficherHanoi(pHanoi);
+    }
+
+    if(HanoiResolu(pHanoi)){
+        printf("Bravo ! Vous avez gagne la partie\n");
+    }
+}
 
 void main(void){
 
@@ -336,23 +389,27 @@ void main(void){
     // printf("La quille 3 est vide :");
     // afficherBool(quilleVide(&hanoi, 2));
 
-    // Test de la fonction : hanoiResolu
-    annonce("test : hanoiResolu");
-    afficherHanoi(&hanoi);
+    // // Test de la fonction : hanoiResolu
+    // annonce("test : hanoiResolu");
+    // afficherHanoi(&hanoi);
 
-    if(HanoiResolu(&hanoi)){
-        printf("Hanoi valde!\n");
-    }else{
-        printf("Hanoi NON valide!\n");
-    }
+    // if(HanoiResolu(&hanoi)){
+    //     printf("Hanoi valde!\n");
+    // }else{
+    //     printf("Hanoi NON valide!\n");
+    // }
 
-    resolutionHanoiManuelle3x3(&hanoi);
+    // resolutionHanoiManuelle3x3(&hanoi);
 
-    if(HanoiResolu(&hanoi)){
-        printf("Hanoi valde!\n");
-    }else{
-        printf("Hanoi NON valide!\n");
-    }
+    // if(HanoiResolu(&hanoi)){
+    //     printf("Hanoi valde!\n");
+    // }else{
+    //     printf("Hanoi NON valide!\n");
+    // }
+
+    // Test d'une partie
+    annonce("test d'une partie");
+    jouer();
 
     exit(0);
 }
