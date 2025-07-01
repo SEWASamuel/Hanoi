@@ -162,14 +162,14 @@ Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination)
 
     if(hauteurRetrait < 0 || hauteurRetrait > NB_DISQUES-1){ // il faut que la quille retirée soit entre 0 et le NB_QUILLES-1
         possible = FALSE;
-        erreur("La hauteur de retrait possible n'est pas valide");
-        printf("la hauteur de retrait obtenue par la fonction est : %d", hauteurRetrait);
+        erreur("La hauteur de retrait possible n'est pas valide\n");
+        printf("la hauteur de retrait obtenue par la fonction est : %d\n", hauteurRetrait);
     }
 
     if(hauteurPlacement < 0 || hauteurPlacement > NB_QUILLES-1){ // il faut que la valeur renvoyée par la fonction "hauteurPlacementQuillePossible" soit valable (0 <= v <= NB_QUILLES)
         possible = FALSE;
-        erreur("La hauteur de placement possible n'est pas valide");
-        printf("la hauteur de placement obtenue par la fonction est : %d", hauteurPlacement);
+        erreur("La hauteur de placement possible n'est pas valide\n");
+        printf("la hauteur de placement obtenue par la fonction est : %d\n", hauteurPlacement);
     }
 
     if(quilleDepart == quilleDestination){ // il faut que la la quille où on prends le disque ne soit pas la meme quille où on va le placer
@@ -186,7 +186,7 @@ Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination)
         // TODO : evaluer le cas ou la quille de destination est vide. On n'aurait donc aucun disque de support à verifier
         if(!quilleVide(hanoi, quilleDestination)){
             possible = FALSE;
-            erreur("le disque a deplacer est plus grand que le disque sur lequel on le pose");
+            erreur("le disque a deplacer est plus grand que le disque sur lequel on le pose\n");
             printf("Valeur du disque de départ : %d\nValeur du disque de support de destination : %d\n", valeurDisqueRetire, valeurDisqueDestinationSupport);
             }
         }
@@ -277,7 +277,7 @@ int demandeSaisieEntier(char *message){
 
 // but : faire jouer l'utilisateur
 void jouer(){
-    printf("Bienvenu au jeu du Hanoi!\nPour deplacer les disques : saisissez le numero de la quille ou vous voulez retirer le disque et ensuite le numero de la quille ou vous voulez le poser\n\n");
+    printf("Bienvenu au jeu du Hanoi!\nRegles du jeu :\n\t- Saisissez le numero de la quille ou vous voulez retirer le disque et ensuite le numero de la quille ou vous voulez le poser\n\t- saisir 0 ou une valeur negative pour quitter la partie\n\n");
     // on créé l'objet et on l'initialise
     THanoi hanoi;
     THanoi *pHanoi = &hanoi;
@@ -290,9 +290,12 @@ void jouer(){
     int quilleDep;
     int quilleDest;
 
+    // cette variable servira a faire quitter la boucle while dans le cas ou le joueur voudrait quitter la partie
+    Bool quitter = FALSE;
+
 
     // on fait une boucle qui se répète tant que le hanoi n'est pas résolus
-    while(!HanoiResolu(pHanoi)){
+    while(!HanoiResolu(pHanoi) && !quitter){
         /**
          * à faire :
          * - faire saisir une quille de depart et de destination à l'utilisateur
@@ -305,6 +308,12 @@ void jouer(){
         do{
             quilleDep = demandeSaisieEntier("Saisissez la quille d'ou vous voulez retirer le disque :") - 1;
             quilleDest = demandeSaisieEntier("Saisissez la quille ou vous voulez poser le disque :") - 1;
+
+            if(quilleDep+1 <= 0 || quilleDest-1 <= 0){
+                quitter = TRUE;
+                printf("\nA Bientot !\n");
+                return;
+            }
         }while(!deplacementPossible(pHanoi, quilleDep, quilleDest));
 
         deplacerDisque(pHanoi, quilleDep, quilleDest);
@@ -312,7 +321,7 @@ void jouer(){
     }
 
     if(HanoiResolu(pHanoi)){
-        printf("Bravo ! Vous avez gagne la partie\n");
+        printf("\nBravo ! Vous avez gagne la partie\n");
     }
 }
 
