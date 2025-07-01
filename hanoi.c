@@ -277,7 +277,7 @@ int demandeSaisieEntier(char *message){
 
 // but : faire jouer l'utilisateur
 void jouer(){
-    printf("Bienvenu au jeu du Hanoi!\nRegles du jeu :\n\t- Saisissez le numero de la quille ou vous voulez retirer le disque et ensuite le numero de la quille ou vous voulez le poser\n\t- saisir 0 ou une valeur negative pour quitter la partie\n\n");
+    printf("Bienvenu au jeu du Hanoi!\nRegles du jeu :\n\n\t- Saisissez le numero de la quille ou vous voulez retirer le disque et ensuite le numero de la quille ou vous voulez le poser\n\n\t- saisir 0 ou une valeur negative pour quitter la partie\n\n");
     // on créé l'objet et on l'initialise
     THanoi hanoi;
     THanoi *pHanoi = &hanoi;
@@ -309,11 +309,12 @@ void jouer(){
             quilleDep = demandeSaisieEntier("Saisissez la quille d'ou vous voulez retirer le disque :") - 1;
             quilleDest = demandeSaisieEntier("Saisissez la quille ou vous voulez poser le disque :") - 1;
 
-            if(quilleDep+1 <= 0 || quilleDest-1 <= 0){
+            if(quilleDep+1 < 1 || quilleDest+1 < 1){
                 quitter = TRUE;
-                printf("\nA Bientot !\n");
+                printf("A bientot\n");
                 return;
             }
+
         }while(!deplacementPossible(pHanoi, quilleDep, quilleDest));
 
         deplacerDisque(pHanoi, quilleDep, quilleDest);
