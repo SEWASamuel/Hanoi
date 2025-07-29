@@ -15,7 +15,7 @@ typedef struct Matrix{
 }Matrice, THanoi;
 
 // but : mettre une valeur dans une case de la matrice
-void hanoiMettreValeur(THanoi *hanoi, int ligne, int colonne, int valeur);
+void modifierCaseHanoi(THanoi *hanoi, int ligne, int colonne, int valeur);
 
 // but : initialiser la matrice représentant la tour de hanoi
 void initTHanoi(THanoi *hanoi);
@@ -56,7 +56,11 @@ void executerDeplacement(THanoi *hanoi, struct Deplacement *depl);
 void executerSequence(THanoi *hanoi, struct Sequence *sequence);
 
 // but : resoudre une partie de tours de Hanoi automatiquement
-void ResolutionHanoiRecursif();
+void ResolutionHanoiRecursif(THanoi * hanoi, int nbQuilles, int quilleDepart, int quilleDestination);
+
+// but : renvoyer une sequence permettant la resolution d'un jau de hanoi
+//toujours initialiser le paramètre "arret" à : vrai
+struct Sequence* ResolutionHanoiRecursifSequence(THanoi * hanoi, struct Sequence *sequence, int nbQuilles, int quilleDepart, int quilleDestination, Bool arret);
 
 // but : faire jouer l'utilisateur
 void jouer(THanoi *hanoi);

@@ -4,6 +4,94 @@
 #include "include/sequence.h"
 #include "include/hanoi.h"
 #include "include/evenements.h"
+#define NB_TESTS 12
+
+void afficherMenu(){
+    sautDeLigne(1);
+    printf("Voici la liste des tests : ");
+    sautDeLigne(2);
+    messageTabule(1,"1 - Affichage d'un jeu de tour de hanoi initialisé\n");
+    messageTabule(1,"2 - La hauteur de placement sur une quille\n");
+    messageTabule(1,"3 - Deplacement d'une quille\n");
+    messageTabule(1,"4 - Resolution d'un jeu de tours de hanoi 3x3 avec une sequence de deplacements predefini\n");
+    messageTabule(1,"5 - Verification d'une quille vide\n");
+    messageTabule(1,"6 - Vérification d'un hanoi resolu\n");
+    messageTabule(1,"7 - Execution d'un deplacement extrait d'une donnée de type \"Deplacement\"\n");
+    messageTabule(1,"8 - Cration d'une sequence\n");
+    messageTabule(1,"9 - Affichage d'une donnee de type \"Sequence\" (iteratif)\n");
+    messageTabule(1,"10 - Affichage d'une donnee de type \"Sequence\" (recursif)\n");
+    messageTabule(1,"11 - Defilement d'une donnee de type \"Sequence\"\n");
+    messageTabule(1,"12 - Execution d'une sequence de deplacement e partir d'une donnee de type \"Deplacement\"\n");
+    messageTabule(1,"13 - Creation d'une sequence pour resoudre un jeu de hanoi (recursif)\n");
+    messageTabule(1,"14 - Resolution d'un jeu de tours de hanoi 3x3 de façon récursive\n");
+    
+}
+
+void choixTest(THanoi *hanoi){
+    afficherMenu();
+    int choix;
+    do{
+        sautDeLigne(1);
+        choix = demandeSaisieEntier("Veuillez saisir le nombre du test que vous voulez effectuer\n(0 pour reafficher la liste | -1 pour quiter)\n\t-> : ");
+
+        switch (choix)
+        {
+            case -1:
+                printf("A plus");
+                sautDeLigne(1);
+                break;
+            case 0:
+                afficherMenu();
+                break;
+            case 1:
+                testAffichageHanoi(hanoi);
+                break;
+            case 2:
+                testHauteurPlacementQuillePossible(hanoi);
+                break;
+            case 3:
+                testDeplacementQuille(hanoi);
+                break;
+            case 4:
+                testResolutionHanoiManuelle(hanoi);
+                break;
+            case 5:
+                testQuilleVide(hanoi);
+                break;
+            case 6:
+                testHanoiResolu(hanoi);
+                break;
+            case 7:
+                testExecuterTypeDeplacement(hanoi);
+                break;
+            case 8:
+                testCreationSequence(hanoi);
+                break;
+            case 9:
+                testAfficherSequenceIteratif();
+                break;
+            case 10:
+                testAffficherSequenceRecursif();
+                break;
+            case 11:
+                testDefilerSequence();
+                break;
+            case 12:
+                testExecuterSequence(hanoi);
+                break;
+            case 13:
+                testCreerSequenceResolutionHanoi(hanoi);
+                break;
+            case 14:
+                testResoudreHanoiRecursif(hanoi);
+                break;
+            default:
+                printf("nombre invalide ! Veuillez resaiisir un nombre valide");
+                sautDeLigne(2);
+                break;
+        }
+    }while(choix != -1);
+}
 
 void testAffichageHanoi(THanoi *hanoi){
     initTHanoi(hanoi);
@@ -15,8 +103,8 @@ void testAffichageHanoi(THanoi *hanoi){
 void testHauteurPlacementQuillePossible(THanoi *hanoi){
     initTHanoi(hanoi);
 
+    annonce("TEST : hauteurPlacementQuillePossible");
     afficherHanoi(hanoi);
-    annonce("test de : hauteurPlacementQuillePossible");
     printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(hanoi,0));
     printf("voici la hauteur de la quille 2 : %d\n", hauteurPlacementQuillePossible(hanoi,1));
     printf("voici la hauteur de la quille 3 : %d\n", hauteurPlacementQuillePossible(hanoi,2));
@@ -25,7 +113,8 @@ void testHauteurPlacementQuillePossible(THanoi *hanoi){
 void testDeplacementQuille(THanoi *hanoi){
     initTHanoi(hanoi);
 
-    annonce("Test d'un deplacement de la quille 1 a la quille 2 (possible)");
+    annonce("TEST d'un deplacement saisi par l'utilisateur");
+    afficherHanoi(hanoi);
     int dep = demandeSaisieEntier("Veuillez saisir la quille de depart : ")-1;
     int dest = demandeSaisieEntier("Veuillez saisir la quille de destination : ")-1;
     deplacerDisque(hanoi, dep, dest);
@@ -35,7 +124,7 @@ void testDeplacementQuille(THanoi *hanoi){
 void testResolutionHanoiManuelle(THanoi *hanoi){
     initTHanoi(hanoi);
 
-    annonce("test de resolution du jeu manuellement");
+    annonce("TEST de resolution du jeu manuellement");
     deplacerDisque(hanoi, 0, 2);
     afficherHanoi(hanoi);
     deplacerDisque(hanoi, 0, 1);
@@ -54,6 +143,7 @@ void testResolutionHanoiManuelle(THanoi *hanoi){
 
 // Test de la fonction : quilleVide
 void testQuilleVide(THanoi *hanoi){
+    annonce("TEST : testQuilleVide");
     initTHanoi(hanoi);
 
     afficherHanoi(hanoi);
@@ -69,7 +159,7 @@ void testQuilleVide(THanoi *hanoi){
 void testHanoiResolu(THanoi *hanoi){
     initTHanoi(hanoi);
     
-    annonce("test : hanoiResolu");
+    annonce("TEST : hanoiResolu");
     afficherHanoi(hanoi);
 
     if(HanoiResolu(hanoi)){
@@ -89,7 +179,7 @@ void testHanoiResolu(THanoi *hanoi){
 
 // Test d'une partie
 void testJouer(THanoi *hanoi){
-    annonce("test d'une partie");
+    annonce("TEST d'une partie");
     jouer(hanoi);
 }
 
@@ -115,7 +205,7 @@ void initSeqPre(struct Sequence *seq){
 void testExecuterTypeDeplacement(THanoi *hanoi){
     initTHanoi(hanoi);
 
-    annonce("Test : deplacement");
+    annonce("TEST : deplacement");
     struct Deplacement *depl = nouveauDeplacement(1,3);
     afficherDeplacement(depl);
     struct Deplacement *dep2 = nouveauDeplacement(1,2);
@@ -145,7 +235,7 @@ void testExecuterTypeDeplacement(THanoi *hanoi){
 // test : création d'une sequence sous forme de pile de deplacements
 void testCreationSequence(){
 
-    annonce("Test : creation sequence");
+    annonce("TEST : creation sequence");
 
     struct Sequence *seq = nouvelleSequenceVide();
 
@@ -155,7 +245,7 @@ void testCreationSequence(){
 }
 
 void testAfficherSequenceIteratif(){
-    annonce("Test : afficher une sequence iterativement");
+    annonce("TEST : afficher une sequence iterativement");
 
     messageTabule(1, "Creation d'une sequence vide");
     sautDeLigne(1);
@@ -176,7 +266,7 @@ void testAfficherSequenceIteratif(){
 }
 
 void testAffficherSequenceRecursif(){
-    annonce("Test : afficher une sequence recursivement");
+    annonce("TEST : afficher une sequence recursivement");
 
     messageTabule(1, "test sur une sequence vide");
     sautDeLigne(1);
@@ -190,7 +280,7 @@ void testAffficherSequenceRecursif(){
 }
 
 void testDefilerSequence(){
-    annonce("Test : defiler une sequence");
+    annonce("TEST : defiler une sequence");
 
     struct Sequence *seq = nouvelleSequenceVide();
     initSeqPre(seq);
@@ -207,7 +297,7 @@ void testDefilerSequence(){
 }
 
 void testExecuterSequence(THanoi *hanoi){
-    annonce("Test : executer une sequence de deplacements");
+    annonce("TEST : executer une sequence de deplacements");
     sautDeLigne(1);
 
     initTHanoi(hanoi);
@@ -218,6 +308,26 @@ void testExecuterSequence(THanoi *hanoi){
     executerSequence(hanoi, seq);
 }
 
+void testCreerSequenceResolutionHanoi(THanoi *hanoi){
+    annonce("TEST : creer une sequence permettant de rsoudre un jeu de hanoi 3x3");
+    sautDeLigne(1);
+
+    initTHanoi(hanoi);
+
+    afficherSequenceIteratif(ResolutionHanoiRecursifSequence(hanoi, nouvelleSequenceVide(), 3, 1, 3, TRUE));
+}
+
+void testResoudreHanoiRecursif(THanoi *hanoi){
+    annonce("TEST : resoudre un jeu de hanoi recursivement");
+    sautDeLigne(1);
+
+    messageTabule(1, "On fera passer les disques de la quille 1 à la quille 3");
+
+    initTHanoi(hanoi);
+
+    ResolutionHanoiRecursif(hanoi,3,1,3);
+}
+
 
 void main(void){
 
@@ -226,18 +336,22 @@ void main(void){
     THanoi hanoi;
     THanoi *pHanoi = &hanoi;
 
-    testAffichageHanoi(pHanoi);
-    testHauteurPlacementQuillePossible(pHanoi);
-    testDeplacementQuille(pHanoi);
-    testResolutionHanoiManuelle(pHanoi);
-    testQuilleVide(pHanoi);
-    testHanoiResolu(pHanoi);
-    testExecuterTypeDeplacement(pHanoi);
-    testCreationSequence(pHanoi);
-    testAfficherSequenceIteratif();
-    testAffficherSequenceRecursif();
-    testDefilerSequence();
-    testExecuterSequence(pHanoi);
+    // testAffichageHanoi(pHanoi);
+    // testHauteurPlacementQuillePossible(pHanoi);
+    // testDeplacementQuille(pHanoi);
+    // testResolutionHanoiManuelle(pHanoi);
+    // testQuilleVide(pHanoi);
+    // testHanoiResolu(pHanoi);
+    // testExecuterTypeDeplacement(pHanoi);
+    // testCreationSequence(pHanoi);
+    // testAfficherSequenceIteratif();
+    // testAffficherSequenceRecursif();
+    // testDefilerSequence();
+    // testExecuterSequence(pHanoi);
+    // testResoudreHanoiRecursif(pHanoi);
+    // testCreerSequenceResolutionHanoi(pHanoi);
+
+    choixTest(pHanoi);
 
     exit(0);
 }

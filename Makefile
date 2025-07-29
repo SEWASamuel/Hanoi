@@ -9,6 +9,8 @@ OBJ_DIR=obj/
 #	- compiler les fichier objet en un executable
 # tou cela, pour le main et le test	
 
+all : main test
+
 main : objets
 	$(CC) -c main.c
 	$(CC) bool.o evenements.o hanoi.o sequence.o main.o -o main

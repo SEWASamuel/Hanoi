@@ -33,12 +33,13 @@ void messageTabule(int n, char *message){
 }
 
 void annonce(char *message){
+    sautDeLigne(1);
     etoile(70);
     sautDeLigne(1);
     printf("\t%s", message);
     sautDeLigne(1);
     etoile(70);
-    sautDeLigne(1);
+    sautDeLigne(2);
 }
 
 int demandeSaisieEntier(char *message){

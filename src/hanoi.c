@@ -4,8 +4,8 @@
 #include "../include/sequence.h"
 
 // but : mettre une valeur dans une case de la matrice
-void hanoiMettreValeur(THanoi *hanoi, int ligne, int colonne, int valeur){
-    hanoi->objet[ligne][colonne] = valeur;
+void modifierCaseHanoi(THanoi *hanoi, int ligne, int colonne, int valeur){
+    hanoi->objet[ligne-1][colonne-1] = valeur;//MODIF ICI
 }
 
 // but : initialiser la matrice représentant la tour de hanoi
@@ -13,12 +13,14 @@ void initTHanoi(THanoi *hanoi){
 
     for(int i=0 ; i<NB_DISQUES ; i++){
         for(int j=0 ; j<NB_QUILLES ; j++){
-            hanoi->objet[i][j] = 0;
+            // hanoi->objet[i][j] = 0;
+            modifierCaseHanoi(hanoi, i+1, j+1, 0); //MODOF ICI
         }
     }
 
     for(int k=NB_QUILLES-1 ; k>=0; k--){ // on va de la hauteur la plus petite à la plus grande pour placer les disques du plus grand au plus petit
-        hanoi->objet[k][0] = k+1;
+        // hanoi->objet[k][0] = k+1;
+        modifierCaseHanoi(hanoi, k+1, 1, k+1);// MODIF ICI
     }
 }
 
@@ -174,8 +176,10 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
         int hauteurPlacement = hauteurPlacementQuillePossible(hanoi, quilleDestination);
 
         int aux = hanoi->objet[hauteurRetrait][quilleDepart];
-        hanoi->objet[hauteurRetrait][quilleDepart] = 0;
-        hanoi->objet[hauteurPlacement][quilleDestination] = aux;
+        // hanoi->objet[hauteurRetrait][quilleDepart] = 0;
+        // hanoi->objet[hauteurPlacement][quilleDestination] = aux;
+        modifierCaseHanoi(hanoi, hauteurRetrait+1, quilleDepart+1, 0);//MODIF ICI
+        modifierCaseHanoi(hanoi, hauteurPlacement+1, quilleDestination+1, aux);//MODIF ICI
     }else{
         printf("\nDEPLACEMENT IMPOSSIBLE!!!!!! (de la quille %d a %d)\n", quilleDepart+1, quilleDestination+1);
     }
@@ -244,9 +248,38 @@ void executerSequence(THanoi *hanoi, struct Sequence *sequence){
     }
 }
 
-// but : resoudre une partie de tours de Hanoi automatiquement
-void ResolutionHanoiRecursif(){
-   //TODO  
+void ResolutionHanoiRecursif(THanoi *hanoi, int nbQuilles, int quilleDepart, int quilleDestination){
+    if(nbQuilles == 1){
+        deplacerDisque(hanoi, quilleDepart-1, quilleDestination-1);
+    }else{
+        int quilleRestante = 6 - (quilleDepart + quilleDestination);
+        
+        ResolutionHanoiRecursif(hanoi, nbQuilles-1, quilleDepart, quilleRestante);
+
+        deplacerDisque(hanoi, quilleDepart-1, quilleDestination-1); // TODO : corriger la fooction deplacerDisque our qu'on ait pas de soicis d'index (0=1)
+        ResolutionHanoiRecursif(hanoi, nbQuilles-1, quilleRestante, quilleDestination);
+    }
+}
+
+//toujours initialiser le paramètre "arret" à : vrai
+struct Sequence* ResolutionHanoiRecursifSequence(THanoi * hanoi, struct Sequence *sequence, int nbDisques, int quilleDepart, int quilleDestination, Bool arret){
+    if(nbDisques == 1){
+        // deplacerDisque(hanoi, quilleDepart, quilleDestination);
+        ajouterDeplacement(sequence, quilleDepart, quilleDestination);
+    }else{
+        int quilleRestante = 6 - (quilleDepart + quilleDestination);
+        
+        ResolutionHanoiRecursifSequence(hanoi, sequence, nbDisques-1, quilleDepart, quilleRestante, FALSE);
+
+        // deplacerDisque(hanoi, quilleDepart, quilleDestination);
+        ajouterDeplacement(sequence, quilleDepart, quilleDestination);
+
+        ResolutionHanoiRecursifSequence(hanoi, sequence, nbDisques-1, quilleRestante, quilleDestination, FALSE);
+    }
+
+    if(arret){
+        return sequence;
+    }
 }
 
 // but : faire jouer l'utilisateur
