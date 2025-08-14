@@ -13,16 +13,16 @@ all : main test
 
 main : objets
 	$(CC) -c main.c
-	$(CC) bool.o evenements.o hanoi.o sequence.o main.o -o main
+	$(CC) bool.o evenements.o hanoi.o main.o -o main
 
 test : objets
 	$(CC) -c test.c
-	$(CC) bool.o evenements.o hanoi.o sequence.o test.o -o test
+	$(CC) bool.o evenements.o hanoi.o test.o -o test
+	./test
 
 objets :
 	$(CC) -c $(SRC_DIR)bool.c
 	$(CC) -c $(SRC_DIR)evenements.c
-	$(CC) -c $(SRC_DIR)sequence.c
 	$(CC) -c $(SRC_DIR)hanoi.c
 
 clean :

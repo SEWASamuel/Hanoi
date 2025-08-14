@@ -3,7 +3,6 @@
 #define NB_DISQUES 3 // correspond à la taille des quilles
 #define NB_QUILLES 3 // correspond au nombre de quilles
 #include "bool.h"
-#include "sequence.h"
 
 /**
  * Structure de données des tours de Hanoi, ses prmitivess et des fonctions
@@ -14,8 +13,30 @@ typedef struct Matrix{
     int objet[NB_DISQUES][NB_QUILLES];
 }Matrice, THanoi;
 
+// CONVERSIONS
+
+    // MATRICE -> HANOI
+
+int ligneToHauteur(int ligne);
+
+int colonneToQuille(int colonne);
+
+    // HANOI -> MATRICE 
+
+int hauteurToLigne(int hauteur);
+
+int quilleToColonne(int quille);
+
+// PRIMITIVES
+
+// but : obtenir la valeur de d'une cese de la matrice
+int obtenirDisque(THanoi *hanoi, int hauteur, int quille);
+
 // but : mettre une valeur dans une case de la matrice
-void modifierCaseHanoi(THanoi *hanoi, int ligne, int colonne, int valeur);
+void modifierDisque(THanoi *hanoi, int hauteur, int quille, int valeur);
+
+// but : initialiser la matrice représentant seulement avec des cases vides
+void initTHanoiVide(THanoi *hanoi);
 
 // but : initialiser la matrice représentant la tour de hanoi
 void initTHanoi(THanoi *hanoi);
@@ -24,18 +45,25 @@ void initTHanoi(THanoi *hanoi);
 void afficherHanoi(THanoi *hanoi);
 
 // but : savoir si un disque est present sur une quille
-Bool disquePresent(THanoi *hanoi, int colonne);
+Bool disquePresent(THanoi *hanoi, int quille);
+
+// but : savoir si on est dans un niveau de hauteur valide (c-à-d entre 1 et le nombre total de disque, soit la hauteur max de disques sur une quille
+Bool hauteurValide(int n);
 
 // but : obtenir le niveau auquel on peut retirer un disque selon la colonne(quille) passée en paramètre
-int hauteurRetraitQuillePossible(THanoi *hanoi, int colonne);
+int obtenirHauteurDisqueAuSommet(THanoi *hanoi, int quille);
+
+// but : savoir si on peut retirer un disque d'une quille
+Bool retraitDisquePossible(THanoi *hanoi, int quille);
+
+// but : savoir si une quille est pleine
+Bool quillePleine(THanoi *hanoi, int quille);
 
 // but : obtenir le niveau auquel on peut placer un disque selon la colonne(quille) passée en paramètre
-int hauteurPlacementQuillePossible(THanoi *hanoi, int colonne);
+int obtenirHauteurPlacement(THanoi *hanoi, int quille);
 
 // savoir si un disque "a" est plus petit qu'un disque "b"
 Bool plusPetit(int a, int b);
-
-Bool quilleVide(THanoi *hanoi, int numQuille);
 
 // but : verifier qu'on peut deplacer un disque donné à une destinstion donnée
 Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination);
@@ -44,25 +72,23 @@ Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination)
 void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination);
 
 // but : vérifier si le jeu du hanoi est résolu
-Bool HanoiResolu(THanoi *hanoi);
-
-// but : resoudre un jeu de tours de hanoi avec 3 disques et 3 quilles
-void resolutionHanoiManuelle3x3(THanoi *hanoi);
-
-// but : executer un deplacement sur l'objet du hanoi à partir d'une variable de type : struct Deplacement
-void executerDeplacement(THanoi *hanoi, struct Deplacement *depl);
-
-// but : executer une sequence de deplacements sur l'objet du hanoi à partir d'une variable de type : struct Sequence
-void executerSequence(THanoi *hanoi, struct Sequence *sequence);
+Bool HanoiResolu(THanoi *hanoi, int quilleDestinationFinale);
 
 // but : resoudre une partie de tours de Hanoi automatiquement
 void ResolutionHanoiRecursif(THanoi * hanoi, int nbQuilles, int quilleDepart, int quilleDestination);
 
-// but : renvoyer une sequence permettant la resolution d'un jau de hanoi
-//toujours initialiser le paramètre "arret" à : vrai
-struct Sequence* ResolutionHanoiRecursifSequence(THanoi * hanoi, struct Sequence *sequence, int nbQuilles, int quilleDepart, int quilleDestination, Bool arret);
+// but : vérifier qu'un caractère est valide. Cette fonction servira pour le traitelent des cacarères qui seront entrées par l'utilisateur
+Bool caractereValide(char c);
 
-// but : faire jouer l'utilisateur
-void jouer(THanoi *hanoi);
+//but : afficher les instructions du jeu pour l'utilisateur
+void afficherInstructions();
+    
+/** but : presenter le jeu et afficher les instructions dans la console pour l'utilisateu
+ * Le caractèra en paramètre servira pour les inctructions, comme pour la fonction : afficherInstructions
+ */
+void presentation();
+
+// but : faire jouer l'utilisateur (avec une saisie d'entiers)
+void jouerI(THanoi *hanoi);
 
 #endif

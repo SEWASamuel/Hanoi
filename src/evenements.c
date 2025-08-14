@@ -4,8 +4,8 @@
 
 #include "../include/evenements.h"
 
-void erreur(char *message){
-    fprintf(stderr, "Erreur : %s \n", message);
+void attention(char *message){
+    printf("\nAttention : %s \n", message);
 }
 
 void erreurQuitter(char *message){

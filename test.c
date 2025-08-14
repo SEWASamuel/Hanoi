@@ -1,357 +1,301 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "include/bool.h"
-#include "include/sequence.h"
 #include "include/hanoi.h"
 #include "include/evenements.h"
-#define NB_TESTS 12
+#include <time.h>
 
-void afficherMenu(){
-    sautDeLigne(1);
-    printf("Voici la liste des tests : ");
+void afficherListeTests(){
+    printf("voici la liste des tests :");
     sautDeLigne(2);
-    messageTabule(1,"1 - Affichage d'un jeu de tour de hanoi initialisé\n");
-    messageTabule(1,"2 - La hauteur de placement sur une quille\n");
-    messageTabule(1,"3 - Deplacement d'une quille\n");
-    messageTabule(1,"4 - Resolution d'un jeu de tours de hanoi 3x3 avec une sequence de deplacements predefini\n");
-    messageTabule(1,"5 - Verification d'une quille vide\n");
-    messageTabule(1,"6 - Vérification d'un hanoi resolu\n");
-    messageTabule(1,"7 - Execution d'un deplacement extrait d'une donnée de type \"Deplacement\"\n");
-    messageTabule(1,"8 - Cration d'une sequence\n");
-    messageTabule(1,"9 - Affichage d'une donnee de type \"Sequence\" (iteratif)\n");
-    messageTabule(1,"10 - Affichage d'une donnee de type \"Sequence\" (recursif)\n");
-    messageTabule(1,"11 - Defilement d'une donnee de type \"Sequence\"\n");
-    messageTabule(1,"12 - Execution d'une sequence de deplacement e partir d'une donnee de type \"Deplacement\"\n");
-    messageTabule(1,"13 - Creation d'une sequence pour resoudre un jeu de hanoi (recursif)\n");
-    messageTabule(1,"14 - Resolution d'un jeu de tours de hanoi 3x3 de façon récursive\n");
-    
+
+    messageTabule(1, "1 - Afffichage et obtention de disque");
+    sautDeLigne(1);
+    messageTabule(1, "2 - Obtention de disque");
+    sautDeLigne(1);
+    messageTabule(1, "3 - Modification de disque");
+    sautDeLigne(1);
+    messageTabule(1, "4 - Verification de presence d'un disque");
+    sautDeLigne(1);
+    messageTabule(1, "5 - Obtentir le disque au sommet d'une quille");
+    sautDeLigne(1);
+    messageTabule(1, "6 - Savoir si le retrait d'un disque est possible sur une quille donee");
+    sautDeLigne(1);
+    messageTabule(1, "7 - Savoir si une quille est pleine");
+    sautDeLigne(1);
+    messageTabule(1, "8 - Obtenir la hauteur où on peut placer un disque sur une quille");
+    sautDeLigne(1);
+    messageTabule(1, "9 - deplacement d'un disque");
+    sautDeLigne(1);
+    messageTabule(1, "10 - Verifier si une partie a ete resolue");
+    sautDeLigne(1);
+    messageTabule(1, "11 - Jouer une partie");
+    sautDeLigne(1);
+    messageTabule(1, "0 - quitter le programme");
+    sautDeLigne(1);
 }
 
-void choixTest(THanoi *hanoi){
-    afficherMenu();
-    int choix;
-    do{
-        sautDeLigne(1);
-        choix = demandeSaisieEntier("Veuillez saisir le nombre du test que vous voulez effectuer\n(0 pour reafficher la liste | -1 pour quiter)\n\t-> : ");
+void choixTest(THanoi *hanoi, Bool arret){
+    if(!arret){
+        afficherListeTests();
+
+        int choix = demandeSaisieEntier("Veuilez choisir le test à effectuer : ");
 
         switch (choix)
         {
-            case -1:
-                printf("A plus");
-                sautDeLigne(1);
-                break;
-            case 0:
-                afficherMenu();
-                break;
-            case 1:
-                testAffichageHanoi(hanoi);
-                break;
-            case 2:
-                testHauteurPlacementQuillePossible(hanoi);
-                break;
-            case 3:
-                testDeplacementQuille(hanoi);
-                break;
-            case 4:
-                testResolutionHanoiManuelle(hanoi);
-                break;
-            case 5:
-                testQuilleVide(hanoi);
-                break;
-            case 6:
-                testHanoiResolu(hanoi);
-                break;
-            case 7:
-                testExecuterTypeDeplacement(hanoi);
-                break;
-            case 8:
-                testCreationSequence(hanoi);
-                break;
-            case 9:
-                testAfficherSequenceIteratif();
-                break;
-            case 10:
-                testAffficherSequenceRecursif();
-                break;
-            case 11:
-                testDefilerSequence();
-                break;
-            case 12:
-                testExecuterSequence(hanoi);
-                break;
-            case 13:
-                testCreerSequenceResolutionHanoi(hanoi);
-                break;
-            case 14:
-                testResoudreHanoiRecursif(hanoi);
-                break;
-            default:
-                printf("nombre invalide ! Veuillez resaiisir un nombre valide");
-                sautDeLigne(2);
-                break;
+        case 0:
+            printf("Sortie...");
+            sautDeLigne(1);
+            break;
+        case 1:
+            testAffichageEtObtenirDisque(hanoi);
+            break;
+        case 2:
+            testObtenirDisque(hanoi);
+            break;
+        case 3:
+            testModifierDisque(hanoi);
+            break;
+        case 4:
+            testDisquePresent(hanoi);
+            break;
+        case 5:
+            testHauteurDisqueAuSommet(hanoi);
+            break;
+        case 6:
+            testRetraitDisquePossible(hanoi);
+            break;
+        case 7:
+            testQuillePleine(hanoi);
+            break;
+        case 8:
+            testObtenirHauteurPlacement(hanoi);
+            break;
+        case 9:
+            testDeplacementDisque(hanoi);
+            break;
+        case 10:
+            testVerifHanoiResolu(hanoi);
+            break;
+        case 11:
+            testJouer(hanoi);
+        default:
+            printf("Saisie invalide");
+            sautDeLigne(1);
+            break;
         }
-    }while(choix != -1);
-}
-
-void testAffichageHanoi(THanoi *hanoi){
-    initTHanoi(hanoi);
-
-    annonce("TEST : affichage de la tour de hanoi");
-    afficherHanoi(hanoi);
-}
-
-void testHauteurPlacementQuillePossible(THanoi *hanoi){
-    initTHanoi(hanoi);
-
-    annonce("TEST : hauteurPlacementQuillePossible");
-    afficherHanoi(hanoi);
-    printf("voici la hauteur de la quille 1 : %d\n", hauteurPlacementQuillePossible(hanoi,0));
-    printf("voici la hauteur de la quille 2 : %d\n", hauteurPlacementQuillePossible(hanoi,1));
-    printf("voici la hauteur de la quille 3 : %d\n", hauteurPlacementQuillePossible(hanoi,2));
-}
-
-void testDeplacementQuille(THanoi *hanoi){
-    initTHanoi(hanoi);
-
-    annonce("TEST d'un deplacement saisi par l'utilisateur");
-    afficherHanoi(hanoi);
-    int dep = demandeSaisieEntier("Veuillez saisir la quille de depart : ")-1;
-    int dest = demandeSaisieEntier("Veuillez saisir la quille de destination : ")-1;
-    deplacerDisque(hanoi, dep, dest);
-    afficherHanoi(hanoi);
-}
-
-void testResolutionHanoiManuelle(THanoi *hanoi){
-    initTHanoi(hanoi);
-
-    annonce("TEST de resolution du jeu manuellement");
-    deplacerDisque(hanoi, 0, 2);
-    afficherHanoi(hanoi);
-    deplacerDisque(hanoi, 0, 1);
-    afficherHanoi(hanoi);
-    deplacerDisque(hanoi, 2, 1);
-    afficherHanoi(hanoi);
-    deplacerDisque(hanoi, 0, 2);
-    afficherHanoi(hanoi);
-    deplacerDisque(hanoi, 1, 0);
-    afficherHanoi(hanoi);
-    deplacerDisque(hanoi, 1, 2);
-    afficherHanoi(hanoi);
-    deplacerDisque(hanoi, 0, 2);
-    afficherHanoi(hanoi);
-}
-
-// Test de la fonction : quilleVide
-void testQuilleVide(THanoi *hanoi){
-    annonce("TEST : testQuilleVide");
-    initTHanoi(hanoi);
-
-    afficherHanoi(hanoi);
-    printf("La quille 1 est vide :");
-    afficherBool(quilleVide(hanoi, 0));
-    printf("La quille 2 est vide :");
-    afficherBool(quilleVide(hanoi, 1));
-    printf("La quille 3 est vide :");
-    afficherBool(quilleVide(hanoi, 2));
-}
-
-// Test de la fonction : hanoiResolu
-void testHanoiResolu(THanoi *hanoi){
-    initTHanoi(hanoi);
+        
+        choixTest(hanoi, choix == 0);
+    }
     
-    annonce("TEST : hanoiResolu");
+}
+
+void testAffichageEtObtenirDisque(THanoi *hanoi){
+    annonce("TEST : initialisation et affichage d'un jeu de hanoi");
+
+    initTHanoi(hanoi);
+    afficherHanoi(hanoi);
+    
+    sautDeLigne(2);
+}
+
+void testObtenirDisque(THanoi *hanoi){
+    annonce("TEST : obtenir la taille d'un disque selon des coordonnées");
+    initTHanoi(hanoi);
     afficherHanoi(hanoi);
 
-    if(HanoiResolu(hanoi)){
-        printf("Hanoi valde!\n");
-    }else{
-        printf("Hanoi NON valide!\n");
+    messageTabule(1, "on fait le test sur les disques de la première quille");
+    sautDeLigne(1);
+    for(int i=1 ; i<= NB_DISQUES ; i++){
+        printf("la taille du disque de la quille 1 à la hauteur %d est : %d", i, obtenirDisque(hanoi, i, 1));
+        sautDeLigne(2);
     }
 
-    resolutionHanoiManuelle3x3(hanoi);
+    messageTabule(1, "on fait le test sur les disques de la deuxieme quille");
+    sautDeLigne(1);
+    for(int i=1 ; i<= NB_DISQUES ; i++){
+        printf("la taille du disque de la quille 2 à la hauteur %d est : %d", i, obtenirDisque(hanoi, i, 2));
+        sautDeLigne(2);
+    }
 
-    if(HanoiResolu(hanoi)){
-        printf("Hanoi valde!\n");
-    }else{
-        printf("Hanoi NON valide!\n");
+    messageTabule(1, "on fait le test sur les disques de la première quille");
+    sautDeLigne(1);
+    for(int i=1 ; i<= NB_DISQUES ; i++){
+        printf("la taille du disque de la quille 3 à la hauteur %d est : %d", i, obtenirDisque(hanoi, i, 3));
+        sautDeLigne(2);
+    }
+
+    sautDeLigne(1);
+}
+
+void testModifierDisque(THanoi *hanoi){
+    annonce("TEST : modification d'une case");
+    
+    initTHanoi(hanoi);
+    messageTabule(1, "Le jeu de hanoi initialise, on mettre le deuxième disque de la première quille à 0");
+    modifierDisque(hanoi, 2, 1, 0);
+    afficherHanoi(hanoi);
+
+    messageTabule(1, "Le jeu de hanoi initialise, on mettre le premier disque de la deuxième quille à 5");
+    modifierDisque(hanoi, 1, 2, 5);
+    afficherHanoi(hanoi);
+
+    sautDeLigne(2);
+}
+
+void testDisquePresent(THanoi *hanoi){
+    annonce("TEST : savoir si au moins un disque est present sur une quille");
+    initTHanoi(hanoi);
+    afficherHanoi(hanoi);
+
+    sautDeLigne(1);
+    messageTabule(1, "la fonction disquePresent devrait renvoyer vrai pour la premiere quille");
+    messageTabule(1, "et faux pour les autres");
+    sautDeLigne(2);
+
+    for(int i=1 ; i<=NB_QUILLES ; i++){
+        printf("il y a au moins un disque sur la quille %d : ", i); afficherBool(disquePresent(hanoi, i)); sautDeLigne(1);
+    }
+    sautDeLigne(2);
+
+    messageTabule(1, "On va refaire le test après avoir modifié le jeu de hanoi aleatoirement");
+    modifierDisque(hanoi, rand() % 3 + 1, rand() % 2 + 2, (rand() % NB_QUILLES) + 1);
+    afficherHanoi(hanoi);
+    for(int k=1 ; k<=NB_QUILLES ; k++){
+        printf("il y a au moins un disque sur la quille %d : ", k) ; afficherBool(disquePresent(hanoi, k)); sautDeLigne(1);
+    }
+
+    sautDeLigne(1);
+}
+
+// but : retourner un entier aleatoire entre 0 et l'entier passé en paramètre
+int entierAleatoire0(int coef){
+    return (rand() % (coef + 1));
+}
+
+// but : retourner un entier aleatoire entre 1 et l'entier passé en paramètre
+int entierAleatoire1(int coef){
+    return ((rand() % coef) + 1);
+}
+
+// but : initaialiser un jeu de hanoi de façon alatoire
+void initTHanoiAleatoire(THanoi *hanoi){
+    initTHanoiVide(hanoi);
+    for(int i=1 ; i<=NB_QUILLES ; i++){
+        for(int j=1 ; j<=entierAleatoire0(NB_DISQUES) ; j++){
+            modifierDisque(hanoi, j, i, rand()%NB_DISQUES+1);
+        }
     }
 }
 
-// Test d'une partie
+void testHauteurDisqueAuSommet(THanoi *hanoi){
+    annonce("TEST : on teste la fonction obteirHauteurDisqueAuSommet");
+    initTHanoiAleatoire(hanoi);
+
+    afficherHanoi(hanoi);
+
+    for(int i=1 ; i<= NB_QUILLES ; i++){
+        printf("La hauteur de la quille %d est de : %d\n", i, obtenirHauteurDisqueAuSommet(hanoi,i));sautDeLigne(1);
+    }
+
+    sautDeLigne(2);
+}
+
+void testRetraitDisquePossible(THanoi *hanoi){
+
+    annonce("TEST : on va tester la fonction retraitDisque possible");
+    initTHanoiAleatoire(hanoi);
+
+    afficherHanoi(hanoi);
+
+    for(int i=1 ; i<=NB_QUILLES ; i++){
+        printf("On peur retirer un disque de la quille %d : ", i); afficherBool(retraitDisquePossible(hanoi, i)); sautDeLigne(1);
+    }
+
+    sautDeLigne(1);
+}
+
+void testQuillePleine(THanoi *hanoi){
+    annonce("TEST : on va tester la fonction : quillePleine");
+    initTHanoiAleatoire(hanoi);
+    afficherHanoi(hanoi);
+
+    for(int i=1 ; i<=NB_QUILLES ; i++){
+        printf("la quille %d est pleine : ", i); afficherBool(quillePleine(hanoi, i)); sautDeLigne(1);
+    }
+
+    sautDeLigne(2);
+}
+
+void testObtenirHauteurPlacement(THanoi *hanoi){
+    annonce("TEST : on va tester la fonction obtenirGauteurPlacement");
+    initTHanoiAleatoire(hanoi);
+    afficherHanoi(hanoi);
+
+    for(int i=1 ; i<=NB_QUILLES ; i++){
+        printf("La hauteur de placement pour la quille %d est : %d", i, obtenirHauteurPlacement(hanoi, i)); sautDeLigne(1);
+    }
+
+    sautDeLigne(1);
+}
+
+// but : executer un deplacement aleatoire
+void deplacementAleatoire(THanoi *hanoi){
+    int quilleDepart = entierAleatoire1(NB_QUILLES);
+    int quilleDestination = entierAleatoire1(NB_QUILLES);
+    printf("\ndeplacement aleatoire genere : %d -> %d\n", quilleDepart, quilleDestination);
+    deplacerDisque(hanoi, quilleDepart, quilleDestination);
+}
+
+void testDeplacementDisque(THanoi *hanoi){
+    annonce("TEST : on va tester la fonction deplacementPossible");
+    initTHanoiAleatoire(hanoi);
+    afficherHanoi(hanoi);
+
+    int nbDeplacements = demandeSaisieEntier("Veuillez saisir le nombre de deplacemente aleatoires a effectuer");
+    for(int i=0 ; i<nbDeplacements ; i++){
+        sautDeLigne(1);
+        printf("\tDeplacement %d : \n", i+1);
+        sautDeLigne(1);
+        deplacementAleatoire(hanoi);
+        afficherHanoi(hanoi);
+        sautDeLigne(1);
+    }
+}
+
+// but : initialiser un jeu de hanoi deja resolu
+void initTHanoiResolu(THanoi *hanoi, int quilleDestination){
+    initTHanoiVide(hanoi);
+
+    for(int i=1 ; i<=NB_DISQUES ; i++){
+        modifierDisque(hanoi, i, quilleDestination, NB_DISQUES-i+1);
+    }
+}
+
+void testVerifHanoiResolu(THanoi *hanoi){
+    annonce("TEST : on va tester la fonction qui verifie si un hanoi est resolu");
+
+    messageTabule(1, "on va réaliser un test sur un jeu de hanoi initialisé déjà résolu");
+    initTHanoiResolu(hanoi, NB_QUILLES);
+    afficherHanoi(hanoi);
+    printf("le henoi ci dessus est résolu : "); afficherBool(HanoiResolu(hanoi,NB_QUILLES)); sautDeLigne(2);
+    
+    messageTabule(1, "on va réaliser un test sur un jeu de hanoi initialisé aléatoirement");
+    initTHanoiAleatoire(hanoi);
+    afficherHanoi(hanoi);
+    printf("le henoi ci dessus est résolu : "); afficherBool(HanoiResolu(hanoi,NB_QUILLES)); sautDeLigne(2);
+}
+
 void testJouer(THanoi *hanoi){
-    annonce("TEST d'une partie");
+    annonce("TEST : on va réaliser un test sur la fonction : jouer (entiers)");
     jouer(hanoi);
 }
 
-// but : initialiser une sequence predefinie
-void initSeqPre(struct Sequence *seq){
-    ajouterDeplacement(seq,1,3);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-    ajouterDeplacement(seq,1,2);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-    ajouterDeplacement(seq,3,2);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-    ajouterDeplacement(seq,1,3);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-    ajouterDeplacement(seq,2,1);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-    ajouterDeplacement(seq,2,3);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-    ajouterDeplacement(seq,1,3);
-    // afficherDeplacement(obtenirDernierDeplacement(seq));
-}
-
-// test de la creation de deplacements
-void testExecuterTypeDeplacement(THanoi *hanoi){
-    initTHanoi(hanoi);
-
-    annonce("TEST : deplacement");
-    struct Deplacement *depl = nouveauDeplacement(1,3);
-    afficherDeplacement(depl);
-    struct Deplacement *dep2 = nouveauDeplacement(1,2);
-    afficherDeplacement(dep2);
-    struct Deplacement *dep3 = nouveauDeplacement(3,2);
-    afficherDeplacement(dep3);
-    struct Deplacement *dep4 = nouveauDeplacement(1,3);
-    afficherDeplacement(dep4);
-    struct Deplacement *dep5 = nouveauDeplacement(2,1);
-    afficherDeplacement(dep5);
-    struct Deplacement *dep6 = nouveauDeplacement(2,3);
-    afficherDeplacement(dep6);
-    struct Deplacement *dep7 = nouveauDeplacement(1,3);
-    afficherDeplacement(dep7);
-
-    afficherHanoi(hanoi);
-    executerDeplacement(hanoi, depl);
-    executerDeplacement(hanoi, dep2);
-    executerDeplacement(hanoi, dep3);
-    executerDeplacement(hanoi, dep4);
-    executerDeplacement(hanoi, dep5);
-    executerDeplacement(hanoi, dep6);
-    executerDeplacement(hanoi, dep7);
-    struct Deplacement *deplFaux = nouveauDeplacement(1,4); // censé signaler une erreur dans la console
-}
-
-// test : création d'une sequence sous forme de pile de deplacements
-void testCreationSequence(){
-
-    annonce("TEST : creation sequence");
-
-    struct Sequence *seq = nouvelleSequenceVide();
-
-    initSeqPre(seq);
-
-    printf("la taille de la sequence est : %d\n", obtenirTaille(seq));
-}
-
-void testAfficherSequenceIteratif(){
-    annonce("TEST : afficher une sequence iterativement");
-
-    messageTabule(1, "Creation d'une sequence vide");
-    sautDeLigne(1);
-
-    struct Sequence *seq = nouvelleSequenceVide();
-    messageTabule(1, "test sur une sequence vide");
-    sautDeLigne(1);
-    afficherSequenceIteratif(seq);
-    sautDeLigne(2);
-
-    messageTabule(1, "ajout de deplacements dans la sequence");
-    initSeqPre(seq);
-    sautDeLigne(2);
-
-    messageTabule(1, "affichage de la sequence");
-    sautDeLigne(1);
-    afficherSequenceIteratif(seq);
-}
-
-void testAffficherSequenceRecursif(){
-    annonce("TEST : afficher une sequence recursivement");
-
-    messageTabule(1, "test sur une sequence vide");
-    sautDeLigne(1);
-    struct Sequence *seq = nouvelleSequenceVide();
-    afficherSequenceRecursif(obtenirPremierDeplacement(seq));
-    sautDeLigne(2);
-
-    messageTabule(1, "test sur une sequence remplie");
-    initSeqPre(seq);
-    sautDeLigne(2);
-}
-
-void testDefilerSequence(){
-    annonce("TEST : defiler une sequence");
-
-    struct Sequence *seq = nouvelleSequenceVide();
-    initSeqPre(seq);
-
-    messageTabule(1, "Voici la sequence initialisee\n");
-    afficherSequenceIteratif(seq);
-    sautDeLigne(2);
-
-    messageTabule(1, "on depile la sequence\n");
-    struct Deplacement *depl = defilerSequence(seq);
-    printf("voici le deplacement qu'on a defile : "); afficherDeplacement(depl);
-    sautDeLigne(1);
-    afficherSequenceIteratif(seq);
-}
-
-void testExecuterSequence(THanoi *hanoi){
-    annonce("TEST : executer une sequence de deplacements");
-    sautDeLigne(1);
-
-    initTHanoi(hanoi);
-
-    struct Sequence *seq = nouvelleSequenceVide();
-    initSeqPre(seq);
-
-    executerSequence(hanoi, seq);
-}
-
-void testCreerSequenceResolutionHanoi(THanoi *hanoi){
-    annonce("TEST : creer une sequence permettant de rsoudre un jeu de hanoi 3x3");
-    sautDeLigne(1);
-
-    initTHanoi(hanoi);
-
-    afficherSequenceIteratif(ResolutionHanoiRecursifSequence(hanoi, nouvelleSequenceVide(), 3, 1, 3, TRUE));
-}
-
-void testResoudreHanoiRecursif(THanoi *hanoi){
-    annonce("TEST : resoudre un jeu de hanoi recursivement");
-    sautDeLigne(1);
-
-    messageTabule(1, "On fera passer les disques de la quille 1 à la quille 3");
-
-    initTHanoi(hanoi);
-
-    ResolutionHanoiRecursif(hanoi,3,1,3);
-}
-
-
 void main(void){
-
-    // main est un test
-
     THanoi hanoi;
     THanoi *pHanoi = &hanoi;
 
-    // testAffichageHanoi(pHanoi);
-    // testHauteurPlacementQuillePossible(pHanoi);
-    // testDeplacementQuille(pHanoi);
-    // testResolutionHanoiManuelle(pHanoi);
-    // testQuilleVide(pHanoi);
-    // testHanoiResolu(pHanoi);
-    // testExecuterTypeDeplacement(pHanoi);
-    // testCreationSequence(pHanoi);
-    // testAfficherSequenceIteratif();
-    // testAffficherSequenceRecursif();
-    // testDefilerSequence();
-    // testExecuterSequence(pHanoi);
-    // testResoudreHanoiRecursif(pHanoi);
-    // testCreerSequenceResolutionHanoi(pHanoi);
-
-    choixTest(pHanoi);
+    choixTest(pHanoi, FALSE);
 
     exit(0);
 }

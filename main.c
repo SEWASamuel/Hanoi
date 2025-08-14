@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "include/bool.h"
-#include "include/sequence.h"
 #include "include/hanoi.h"
 #include "include/evenements.h"
 
