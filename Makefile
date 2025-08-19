@@ -28,3 +28,9 @@ objets :
 clean :
 	rm *.o
 
+cleanTest :
+	rm test
+
+cleanMain :
+	rm main
+

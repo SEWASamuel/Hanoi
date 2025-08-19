@@ -9,7 +9,7 @@ void afficherListeTests(){
     printf("voici la liste des tests :");
     sautDeLigne(2);
 
-    messageTabule(1, "1 - Afffichage et obtention de disque");
+    messageTabule(1, "1 - Initialisation et affichage");
     sautDeLigne(1);
     messageTabule(1, "2 - Obtention de disque");
     sautDeLigne(1);
@@ -31,6 +31,8 @@ void afficherListeTests(){
     sautDeLigne(1);
     messageTabule(1, "11 - Jouer une partie");
     sautDeLigne(1);
+    messageTabule(1, "12 - Faire resoudre le jeu de hanoi par la machine");
+    sautDeLigne(1);
     messageTabule(1, "0 - quitter le programme");
     sautDeLigne(1);
 }
@@ -48,7 +50,7 @@ void choixTest(THanoi *hanoi, Bool arret){
             sautDeLigne(1);
             break;
         case 1:
-            testAffichageEtObtenirDisque(hanoi);
+            testInitialisationAffichage(hanoi);
             break;
         case 2:
             testObtenirDisque(hanoi);
@@ -79,21 +81,27 @@ void choixTest(THanoi *hanoi, Bool arret){
             break;
         case 11:
             testJouer(hanoi);
+            break;
+        case 12:
+            testResoudreHanoiRecursivement(hanoi);
+            break;
         default:
             printf("Saisie invalide");
             sautDeLigne(1);
             break;
         }
         
+        choix = demandeGlobale("Continuer? ('o' pour oui, et 'n' pour non) ");
+        sautDeLigne(1);
+        
         choixTest(hanoi, choix == 0);
     }
-    
 }
 
-void testAffichageEtObtenirDisque(THanoi *hanoi){
+void testInitialisationAffichage(THanoi *hanoi){
     annonce("TEST : initialisation et affichage d'un jeu de hanoi");
 
-    initTHanoi(hanoi);
+    initTHanoi(hanoi, demandeInitialisation());
     afficherHanoi(hanoi);
     
     sautDeLigne(2);
@@ -101,26 +109,27 @@ void testAffichageEtObtenirDisque(THanoi *hanoi){
 
 void testObtenirDisque(THanoi *hanoi){
     annonce("TEST : obtenir la taille d'un disque selon des coordonnées");
-    initTHanoi(hanoi);
+
+    initTHanoi(hanoi, demandeInitialisation());
     afficherHanoi(hanoi);
 
     messageTabule(1, "on fait le test sur les disques de la première quille");
     sautDeLigne(1);
-    for(int i=1 ; i<= NB_DISQUES ; i++){
+    for(int i=1 ; i<= obtenirNbDisques(hanoi) ; i++){
         printf("la taille du disque de la quille 1 à la hauteur %d est : %d", i, obtenirDisque(hanoi, i, 1));
         sautDeLigne(2);
     }
 
     messageTabule(1, "on fait le test sur les disques de la deuxieme quille");
     sautDeLigne(1);
-    for(int i=1 ; i<= NB_DISQUES ; i++){
+    for(int i=1 ; i<= obtenirNbDisques(hanoi) ; i++){
         printf("la taille du disque de la quille 2 à la hauteur %d est : %d", i, obtenirDisque(hanoi, i, 2));
         sautDeLigne(2);
     }
 
     messageTabule(1, "on fait le test sur les disques de la première quille");
     sautDeLigne(1);
-    for(int i=1 ; i<= NB_DISQUES ; i++){
+    for(int i=1 ; i<= obtenirNbDisques(hanoi) ; i++){
         printf("la taille du disque de la quille 3 à la hauteur %d est : %d", i, obtenirDisque(hanoi, i, 3));
         sautDeLigne(2);
     }
@@ -131,7 +140,7 @@ void testObtenirDisque(THanoi *hanoi){
 void testModifierDisque(THanoi *hanoi){
     annonce("TEST : modification d'une case");
     
-    initTHanoi(hanoi);
+    initTHanoi(hanoi, demandeInitialisation());
     messageTabule(1, "Le jeu de hanoi initialise, on mettre le deuxième disque de la première quille à 0");
     modifierDisque(hanoi, 2, 1, 0);
     afficherHanoi(hanoi);
@@ -145,7 +154,8 @@ void testModifierDisque(THanoi *hanoi){
 
 void testDisquePresent(THanoi *hanoi){
     annonce("TEST : savoir si au moins un disque est present sur une quille");
-    initTHanoi(hanoi);
+
+    initTHanoi(hanoi, demandeInitialisation());
     afficherHanoi(hanoi);
 
     sautDeLigne(1);
@@ -180,10 +190,11 @@ int entierAleatoire1(int coef){
 
 // but : initaialiser un jeu de hanoi de façon alatoire
 void initTHanoiAleatoire(THanoi *hanoi){
-    initTHanoiVide(hanoi);
+    initTHanoiVide(hanoi, demandeInitialisation());
+
     for(int i=1 ; i<=NB_QUILLES ; i++){
-        for(int j=1 ; j<=entierAleatoire0(NB_DISQUES) ; j++){
-            modifierDisque(hanoi, j, i, rand()%NB_DISQUES+1);
+        for(int j=1 ; j<=entierAleatoire0(obtenirNbDisques(hanoi)) ; j++){
+            modifierDisque(hanoi, j, i, rand()%obtenirNbDisques(hanoi)+1);
         }
     }
 }
@@ -265,10 +276,10 @@ void testDeplacementDisque(THanoi *hanoi){
 
 // but : initialiser un jeu de hanoi deja resolu
 void initTHanoiResolu(THanoi *hanoi, int quilleDestination){
-    initTHanoiVide(hanoi);
+    initTHanoiVide(hanoi, demandeInitialisation());
 
-    for(int i=1 ; i<=NB_DISQUES ; i++){
-        modifierDisque(hanoi, i, quilleDestination, NB_DISQUES-i+1);
+    for(int i=1 ; i<=obtenirNbDisques(hanoi) ; i++){
+        modifierDisque(hanoi, i, quilleDestination, obtenirNbDisques(hanoi)-i+1);
     }
 }
 
@@ -291,7 +302,14 @@ void testJouer(THanoi *hanoi){
     jouer(hanoi);
 }
 
+void testResoudreHanoiRecursivement(THanoi *hanoi){
+    initTHanoi(hanoi, demandeInitialisation());
+    afficherHanoi(hanoi);
+    resolutionHanoiRecursif(hanoi, obtenirNbDisques(hanoi), 1, NB_QUILLES);
+}
+
 void main(void){
+
     THanoi hanoi;
     THanoi *pHanoi = &hanoi;
 

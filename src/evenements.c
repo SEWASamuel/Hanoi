@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "../include/evenements.h"
+#include "../include/hanoi.h"; 
 
 void attention(char *message){
     printf("\nAttention : %s \n", message);
@@ -48,4 +49,39 @@ int demandeSaisieEntier(char *message){
     scanf("%d", &a);
 
     return a;
+}
+
+char demandeSaisieCaractere(char *message){
+    char c;
+    printf("%s ", message);
+    scanf("%c", &c);
+
+    return c;
+}
+
+Bool demandeGlobale(char *message){
+    char choix;
+
+    do{
+        printf("%s ", message);
+        getchar();
+        scanf("%c", &choix);
+
+        if( (choix == 'o') || (choix =='O')){
+            return TRUE;
+        }else if( (choix == 'n') || (choix == 'N')){
+            return FALSE;
+        }else{
+            printf("Veuillez Saisir 'o' ou 'n\n");
+        }
+    }while( ( !(choix == 'o') || (choix == 'O') || (choix == 'n') || (choix == 'N') ) );
+}
+
+int demandeInitialisation(){
+    int nbDisques;
+    do{
+        nbDisques = demandeSaisieEntier("Veuillez saisir le nombre de disques pour l'initialisation des quilles : ");
+    }while((nbDisques < 1) || (nbDisques > NB_MAX_DISQUES));
+    
+    return nbDisques;
 }

@@ -2,12 +2,20 @@
 #include "../include/hanoi.h"
 #include "../include/evenements.h"
 
+int obtenirNbDisques(THanoi *hanoi){
+    return hanoi->nbDisques;
+}
+
+void modifierNbDisques(THanoi *hanoi, int nb){
+    hanoi->nbDisques = nb;
+}
+
 // CONVERSIONS
 
     // MATRICE -> HANOI
 
-int ligneToHauteur(int ligne){
-    return (NB_DISQUES - ligne);
+int ligneToHauteur(THanoi *hanoi, int ligne){
+    return (obtenirNbDisques(hanoi) - ligne); 
 }
 
 int colonneToQuille(int colonne){
@@ -16,8 +24,8 @@ int colonneToQuille(int colonne){
 
     // HANOI -> MATRICE
 
-int hauteurToLigne(int hauteur){
-    return (NB_DISQUES - hauteur);
+int hauteurToLigne(THanoi *hanoi, int hauteur){
+    return (obtenirNbDisques(hanoi) - hauteur);
 }
 
 int quilleToColonne(int quille){
@@ -25,18 +33,19 @@ int quilleToColonne(int quille){
 }
 
 int obtenirDisque(THanoi *hanoi, int hauteur, int quille){
-    return hanoi->objet[hauteurToLigne(hauteur)][quilleToColonne(quille)];
+    return hanoi->objet[hauteurToLigne(hauteur,obtenirNbDisques(hanoi))][quilleToColonne(quille)];
 }
 
 // but : mettre une valeur dans une case de la matrice
 void modifierDisque(THanoi *hanoi, int hauteur, int quille, int valeur){
-    hanoi->objet[hauteurToLigne(hauteur)][quilleToColonne(quille)] = valeur;
+    hanoi->objet[hauteurToLigne(hauteur, obtenirNbDisques(hanoi))][quilleToColonne(quille)] = valeur;
 }
 
 // but : initialiser la matrice représentant la tour de hanoi
-void initTHanoiVide(THanoi *hanoi){
+void initTHanoiVide(THanoi *hanoi, int nbDisques){
+    modifierNbDisques(hanoi, nbDisques); printf("att modifVide : %d", obtenirNbDisques(hanoi));
     // ici , on parcourt toutes les cases de du objet de hanoi pour les mettre à vide (0)
-    for(int i=1 ; i<=NB_DISQUES ; i++){
+    for(int i=1 ; i<=obtenirNbDisques(hanoi) ; i++){
         for(int j=1 ; j<=NB_QUILLES ; j++){
             modifierDisque(hanoi, i, j, 0);
         }
@@ -44,23 +53,18 @@ void initTHanoiVide(THanoi *hanoi){
 }
 
 // but : initialiser la matrice représentant la tour de hanoi
-void initTHanoi(THanoi *hanoi){
-    // ici , on parcourt toutes les cases de du objet de hanoi pour les mettre à vide (0)
-    for(int i=1 ; i<=NB_DISQUES ; i++){
-        for(int j=1 ; j<=NB_QUILLES ; j++){
-            modifierDisque(hanoi, i, j, 0);
-        }
-    }
+void initTHanoi(THanoi *hanoi, int nbDisques){
+    modifierNbDisques(hanoi, nbDisques); printf("att modifNor : %d", obtenirNbDisques(hanoi));
+    initTHanoiVide(hanoi, nbDisques);
 
     // Ici, on parcourt tous les niveaud de la première quille de sorte à placer les disques à leur position initiale
-    for(int k=1 ; k<=NB_DISQUES ; k++){
-        modifierDisque(hanoi, k, 1, NB_DISQUES-k+1);
+    for(int k=1 ; k<=nbDisques ; k++){
+        modifierDisque(hanoi, k, 1, nbDisques-k+1);
     }
 }
 
 // but : afficher l'objet dans la console
 void afficherHanoi(THanoi *hanoi){
-    
     printf("\nTour de hanoi :\n\n");
 
     /**
@@ -68,12 +72,12 @@ void afficherHanoi(THanoi *hanoi){
      * Où il y a des disques, on affiche lavaleur du disque
      * Et où il n'u a pas de disque, on affiche une barre (pour former une quille)
      */
-    for(int i=1 ; i<=NB_DISQUES ; i++){
+    for(int i=1 ; i<=obtenirNbDisques(hanoi) ; i++){
         for(int k=1 ; k<=NB_QUILLES ; k++){
-            if(obtenirDisque(hanoi, NB_DISQUES-i+1, k) == 0){
+            if(obtenirDisque(hanoi, obtenirNbDisques(hanoi)-i+1, k) == 0){
                 printf("| ");
             }else{
-                printf("%d ", obtenirDisque(hanoi, NB_DISQUES-i+1, k));
+                printf("%d ", obtenirDisque(hanoi, obtenirNbDisques(hanoi)-i+1, k));
             }
         }
         sautDeLigne(1);
@@ -84,20 +88,19 @@ void afficherHanoi(THanoi *hanoi){
 // but : savoir si un disque est present sur une quille
 Bool disquePresent(THanoi *hanoi, int quille){
     Bool present = FALSE;
-    int i = NB_DISQUES;
+    int i = obtenirNbDisques(hanoi);
 
-    while(hauteurValide(i) && present == FALSE){
+    while(hauteurValide(hanoi, i) && present == FALSE){
         if(obtenirDisque(hanoi, i, quille) != 0){
             present = TRUE;
         }
         i--;
     }
-    //AMELIORER : au lieu d'une boucle for, on peut utiliser une boucle while qui s'arrêtera lorsqu'on aura trouvé au moins un disque sur une colonne
     return present;
 }
 
-Bool hauteurValide(int niveauHauteur){
-    return ((niveauHauteur >= 1) && (niveauHauteur <= NB_DISQUES));
+Bool hauteurValide(THanoi *hanoi, int niveauHauteur){
+    return ((niveauHauteur >= 1) && (niveauHauteur <= obtenirNbDisques(hanoi)));
 }
 
 int obtenirHauteurDisqueAuSommet(THanoi *hanoi, int quille){
@@ -105,9 +108,9 @@ int obtenirHauteurDisqueAuSommet(THanoi *hanoi, int quille){
      * on commence à parcourir les cases à partir du haut (donc on initialise la compteur i à NB_DISQUES)
      * et tant qu'on ne trouve pas de disque, on continue à descendre
      */
-    int i = NB_DISQUES;
+    int i = obtenirNbDisques(hanoi);
 
-    while(hauteurValide(i) && (obtenirDisque(hanoi, i, quille) == 0)){
+    while(hauteurValide(hanoi, i) && (obtenirDisque(hanoi, i, quille) == 0)){
         i--;
     }
 
@@ -122,25 +125,25 @@ Bool retraitDisquePossible(THanoi *hanoi, int quille){
 
     int i = obtenirHauteurDisqueAuSommet(hanoi, quille);
 
-    if(!hauteurValide(i)){
+    if(!hauteurValide(hanoi, i)){
         attention("obtenirhauteurDisqueAuSommet (hauteur invalide)");
     }
 
     // Pour savoir si un disque peut être retiré, on regarde si le nivesu de hauteur renvoyé par la fonction "obtenirHauteurDisqueAuSommet" est valide (soit : entre 1 et NB_DISQUES)
-    return (hauteurValide(obtenirHauteurDisqueAuSommet(hanoi, quille)));
+    return (hauteurValide(hanoi, obtenirHauteurDisqueAuSommet(hanoi, quille)));
 }
 
 // but : savoir si une quille est pleine
 Bool quillePleine(THanoi *hanoi, int quille){
     // si la quille est pleine, c'est parce que le niveau de hauteur renvoyé par la fonction "obtenirHauteurDisqueAuSommet" est égale à NB_DISQUES
-    return (obtenirHauteurDisqueAuSommet(hanoi, quille) == NB_DISQUES);
+    return (obtenirHauteurDisqueAuSommet(hanoi, quille) == obtenirNbDisques(hanoi));
 }
 
 int obtenirHauteurPlacement(THanoi *hanoi, int quille){
     // Pour obenir la hauteur où on peut placer un disque, on prends le niveau juste au dessus du disque au sommet de la quille
     int i = obtenirHauteurDisqueAuSommet(hanoi, quille) + 1;
 
-    if(!hauteurValide(i)){
+    if(!hauteurValide(hanoi, i)){
         attention("hauteurPlacementDisquePossible (la hauteur de placment n'est pas valide)");
     }
 
@@ -201,7 +204,8 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
         modifierDisque(hanoi, obtenirHauteurDisqueAuSommet(hanoi, quilleDepart), quilleDepart, quilleDepart);
         modifierDisque(hanoi, obtenirHauteurPlacement(hanoi, quilleDestination), quilleDestination, aux);
 
-        modifierDisque(hanoi, obtenirHauteurDisqueAuSommet(hanoi, quilleDepart), quilleDepart, 0); // on supprime le disque qu'on a dupliqué
+        // on supprime le disque qu'on a dupliqué
+        modifierDisque(hanoi, obtenirHauteurDisqueAuSommet(hanoi, quilleDepart), quilleDepart, 0);
     }else{
         sautDeLigne(1);
         printf("Deplacement du disque de la quille %d a la quille %d IMPOSSIBLE", quilleDepart, quilleDestination);
@@ -215,8 +219,8 @@ Bool HanoiResolu(THanoi *hanoi, int quilleDestinationFinale){
 
     int i = 1;
 
-    while(hauteurValide(i) && (resolu == TRUE)){
-        if(obtenirDisque(hanoi, i, quilleDestinationFinale) != (NB_DISQUES - i + 1)){
+    while(hauteurValide(hanoi, i) && (resolu == TRUE)){
+        if(obtenirDisque(hanoi, i, quilleDestinationFinale) != (obtenirNbDisques(hanoi) - i + 1)){
             resolu = FALSE;
         }
         i++;
@@ -225,36 +229,21 @@ Bool HanoiResolu(THanoi *hanoi, int quilleDestinationFinale){
     return resolu;
 }
 
-void ResolutionHanoiRecursif(THanoi *hanoi, int nbQuilles, int quilleDepart, int quilleDestination){
+void resolutionHanoiRecursif(THanoi *hanoi, int nbQuilles, int quilleDepart, int quilleDestination){
     if(nbQuilles == 1){
-        deplacerDisque(hanoi, quilleDepart-1, quilleDestination-1);
+        deplacerDisque(hanoi, quilleDepart, quilleDestination);
+        printf("\nDeplacement : %d -> %d\n", quilleDepart, quilleDestination);
+        afficherHanoi(hanoi);
     }else{
         int quilleRestante = 6 - (quilleDepart + quilleDestination);
         
-        ResolutionHanoiRecursif(hanoi, nbQuilles-1, quilleDepart, quilleRestante);
+        resolutionHanoiRecursif(hanoi, nbQuilles-1, quilleDepart, quilleRestante);
 
-        deplacerDisque(hanoi, quilleDepart-1, quilleDestination-1); // TODO : corriger la fooction deplacerDisque our qu'on ait pas de soicis d'index (0=1)
-        ResolutionHanoiRecursif(hanoi, nbQuilles-1, quilleRestante, quilleDestination);
+        deplacerDisque(hanoi, quilleDepart, quilleDestination); // TODO : corriger la fooction deplacerDisque our qu'on ait pas de soicis d'index (0=1)
+        printf("\nDeplacement : %d -> %d\n", quilleDepart, quilleDestination);
+        afficherHanoi(hanoi);
+        resolutionHanoiRecursif(hanoi, nbQuilles-1, quilleRestante, quilleDestination);
     }
-}
-
-Bool caractereValide(char c){
-    Bool valide = FALSE;
-
-    /**
-     * Pour qu'un caractère soit valide, il faut que :
-     * - Soit il corresponde à une à un déplacement, soit entre 1 et NB_QUILLES
-     * - Soit il correspond à "q", pour quitter la partie
-     * - Soit il correspond à "r", pour recommencer la partie
-     */
-
-    if( ( (atoi(c) <= NB_QUILLES) && (atoi(c) >= 1) ) && ((c == "q") || (c == "Q") || (c == "r") || (c == "R") ) ){
-        valide = TRUE;
-    }else{
-        printf("Le caractère saisi est incorrect !!!\n");
-    }
-
-    return valide;
 }
 
 void afficherInstructions(){
@@ -286,11 +275,11 @@ void jouer(THanoi *hanoi){
     int quilleDepart;
     int quilleDestination;
 
-    // initialisations des quilles
-    initTHanoi(hanoi);
-
     // On afficehe un message de presentation et d'explication pour les règles du jeu
     printf("Bienvenu à ce jeu des Tours de Hanoi!\nVoici les règles pour jouer :\n\n\tSaisissez les numeros des quilles pour deplacer un disque\n\tSaisissez 0 pour recommencer la partie\n\tSaisissez un nombre negatif pour arrêter la partie");
+
+    // initialisations des quilles
+    initTHanoi(hanoi, demandeInitialisation());
 
     do{
         afficherHanoi(hanoi);
@@ -313,7 +302,7 @@ void jouer(THanoi *hanoi){
         {
             deplacerDisque(hanoi, quilleDepart, quilleDestination);
         }else if((quilleDepart == 0) || (quilleDestination == 0)){
-            initTHanoi(hanoi);
+            initTHanoi(hanoi,demandeInitialisation());
             sautDeLigne(1);
             messageTabule(1, "Reinitialisation des quilles");
             sautDeLigne(1);
