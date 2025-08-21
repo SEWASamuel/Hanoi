@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "../include/evenements.h"
-#include "../include/hanoi.h"; 
+#include "../include/hanoi.h"
 
 void attention(char *message){
     printf("\nAttention : %s \n", message);
@@ -54,6 +54,7 @@ int demandeSaisieEntier(char *message){
 char demandeSaisieCaractere(char *message){
     char c;
     printf("%s ", message);
+    getchar();
     scanf("%c", &c);
 
     return c;

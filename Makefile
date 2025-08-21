@@ -21,9 +21,7 @@ test : objets
 	./test
 
 objets :
-	$(CC) -c $(SRC_DIR)bool.c
-	$(CC) -c $(SRC_DIR)evenements.c
-	$(CC) -c $(SRC_DIR)hanoi.c
+	$(CC) -c $(SRC_DIR)*.c
 
 clean :
 	rm *.o

@@ -9,10 +9,10 @@
  */
 
 // on va utiliser cette structure sn forme de matrice pour représenter le jeu du hanoi (les 3 tiges)
-typedef struct Matrix{
+typedef struct Matrice{
     int objet[NB_MAX_DISQUES][NB_QUILLES];
     int nbDisques;
-}Matrice, THanoi;
+}THanoi;
 
 // but : obtenir le nombre de disques d'une structure de type THanoi
 int obtenirNbDisques(THanoi *hanoi);
@@ -82,7 +82,7 @@ void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination);
 Bool HanoiResolu(THanoi *hanoi, int quilleDestinationFinale);
 
 // but : resoudre une partie de tours de Hanoi automatiquement
-void resolutionHanoiRecursif(THanoi * hanoi, int nbQuilles, int quilleDepart, int quilleDestination);//CORRIGER
+void resolutionHanoiRecursif(THanoi * hanoi, int nbDisques, int quilleDepart, int quilleDestination);//CORRIGER
 
 //but : afficher les instructions du jeu pour l'utilisateur
 void afficherInstructions();

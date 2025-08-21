@@ -152,6 +152,16 @@ void testModifierDisque(THanoi *hanoi){
     sautDeLigne(2);
 }
 
+// but : retourner un entier aleatoire entre 0 et l'entier passé en paramètre
+int entierAleatoire0(int coef){
+    return (rand() % (coef + 1));
+}
+
+// but : retourner un entier aleatoire entre 1 et l'entier passé en paramètre
+int entierAleatoire1(int coef){
+    return ((rand() % coef) + 1);
+}
+
 void testDisquePresent(THanoi *hanoi){
     annonce("TEST : savoir si au moins un disque est present sur une quille");
 
@@ -169,7 +179,7 @@ void testDisquePresent(THanoi *hanoi){
     sautDeLigne(2);
 
     messageTabule(1, "On va refaire le test après avoir modifié le jeu de hanoi aleatoirement");
-    modifierDisque(hanoi, rand() % 3 + 1, rand() % 2 + 2, (rand() % NB_QUILLES) + 1);
+    modifierDisque(hanoi, entierAleatoire1(obtenirNbDisques(hanoi)), entierAleatoire1(NB_QUILLES-1) + 1, entierAleatoire1(obtenirNbDisques(hanoi))); // on mets un entier aleatoire entre 2 et NB_QUILLES pour que la quille 1 ne soit pas modifiée
     afficherHanoi(hanoi);
     for(int k=1 ; k<=NB_QUILLES ; k++){
         printf("il y a au moins un disque sur la quille %d : ", k) ; afficherBool(disquePresent(hanoi, k)); sautDeLigne(1);
@@ -178,20 +188,15 @@ void testDisquePresent(THanoi *hanoi){
     sautDeLigne(1);
 }
 
-// but : retourner un entier aleatoire entre 0 et l'entier passé en paramètre
-int entierAleatoire0(int coef){
-    return (rand() % (coef + 1));
-}
-
-// but : retourner un entier aleatoire entre 1 et l'entier passé en paramètre
-int entierAleatoire1(int coef){
-    return ((rand() % coef) + 1);
-}
-
 // but : initaialiser un jeu de hanoi de façon alatoire
-void initTHanoiAleatoire(THanoi *hanoi){
-    initTHanoiVide(hanoi, demandeInitialisation());
+void initTHanoiAleatoire(THanoi *hanoi, Bool DejaInitialise){
 
+    if(DejaInitialise){
+        initTHanoiVide(hanoi, obtenirNbDisques(hanoi));
+    }else{
+        initTHanoiVide(hanoi, demandeInitialisation());
+    }
+    
     for(int i=1 ; i<=NB_QUILLES ; i++){
         for(int j=1 ; j<=entierAleatoire0(obtenirNbDisques(hanoi)) ; j++){
             modifierDisque(hanoi, j, i, rand()%obtenirNbDisques(hanoi)+1);
@@ -201,7 +206,7 @@ void initTHanoiAleatoire(THanoi *hanoi){
 
 void testHauteurDisqueAuSommet(THanoi *hanoi){
     annonce("TEST : on teste la fonction obteirHauteurDisqueAuSommet");
-    initTHanoiAleatoire(hanoi);
+    initTHanoiAleatoire(hanoi, FALSE);
 
     afficherHanoi(hanoi);
 
@@ -215,7 +220,7 @@ void testHauteurDisqueAuSommet(THanoi *hanoi){
 void testRetraitDisquePossible(THanoi *hanoi){
 
     annonce("TEST : on va tester la fonction retraitDisque possible");
-    initTHanoiAleatoire(hanoi);
+    initTHanoiAleatoire(hanoi, FALSE);
 
     afficherHanoi(hanoi);
 
@@ -228,7 +233,7 @@ void testRetraitDisquePossible(THanoi *hanoi){
 
 void testQuillePleine(THanoi *hanoi){
     annonce("TEST : on va tester la fonction : quillePleine");
-    initTHanoiAleatoire(hanoi);
+    initTHanoiAleatoire(hanoi, FALSE);
     afficherHanoi(hanoi);
 
     for(int i=1 ; i<=NB_QUILLES ; i++){
@@ -239,8 +244,8 @@ void testQuillePleine(THanoi *hanoi){
 }
 
 void testObtenirHauteurPlacement(THanoi *hanoi){
-    annonce("TEST : on va tester la fonction obtenirGauteurPlacement");
-    initTHanoiAleatoire(hanoi);
+    annonce("TEST : on va tester la fonction obtenirHauteurPlacement");
+    initTHanoiAleatoire(hanoi, FALSE);
     afficherHanoi(hanoi);
 
     for(int i=1 ; i<=NB_QUILLES ; i++){
@@ -260,7 +265,7 @@ void deplacementAleatoire(THanoi *hanoi){
 
 void testDeplacementDisque(THanoi *hanoi){
     annonce("TEST : on va tester la fonction deplacementPossible");
-    initTHanoiAleatoire(hanoi);
+    initTHanoiAleatoire(hanoi, FALSE);
     afficherHanoi(hanoi);
 
     int nbDeplacements = demandeSaisieEntier("Veuillez saisir le nombre de deplacemente aleatoires a effectuer");
@@ -286,19 +291,19 @@ void initTHanoiResolu(THanoi *hanoi, int quilleDestination){
 void testVerifHanoiResolu(THanoi *hanoi){
     annonce("TEST : on va tester la fonction qui verifie si un hanoi est resolu");
 
-    messageTabule(1, "on va réaliser un test sur un jeu de hanoi initialisé déjà résolu");
+    messageTabule(1, "on va realiser un test sur un jeu de hanoi initialise déjà resolu");
     initTHanoiResolu(hanoi, NB_QUILLES);
     afficherHanoi(hanoi);
     printf("le henoi ci dessus est résolu : "); afficherBool(HanoiResolu(hanoi,NB_QUILLES)); sautDeLigne(2);
     
-    messageTabule(1, "on va réaliser un test sur un jeu de hanoi initialisé aléatoirement");
-    initTHanoiAleatoire(hanoi);
+    messageTabule(1, "on va realiser un test sur un jeu de hanoi initialise aleatoirement");
+    initTHanoiAleatoire(hanoi, TRUE);
     afficherHanoi(hanoi);
-    printf("le henoi ci dessus est résolu : "); afficherBool(HanoiResolu(hanoi,NB_QUILLES)); sautDeLigne(2);
+    printf("le jeu de Hanoi ci dessus est résolu : "); afficherBool(HanoiResolu(hanoi,NB_QUILLES)); sautDeLigne(2);
 }
 
 void testJouer(THanoi *hanoi){
-    annonce("TEST : on va réaliser un test sur la fonction : jouer (entiers)");
+    annonce("TEST : on va realiser un test sur la fonction : jouer (entiers)");
     jouer(hanoi);
 }
 
@@ -309,6 +314,7 @@ void testResoudreHanoiRecursivement(THanoi *hanoi){
 }
 
 void main(void){
+    srand(time(NULL));
 
     THanoi hanoi;
     THanoi *pHanoi = &hanoi;
