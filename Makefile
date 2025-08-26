@@ -18,7 +18,6 @@ main : objets
 test : objets
 	$(CC) -c test.c
 	$(CC) bool.o evenements.o hanoi.o test.o -o test
-	./test
 
 objets :
 	$(CC) -c $(SRC_DIR)*.c
