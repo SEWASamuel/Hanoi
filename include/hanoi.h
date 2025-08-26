@@ -54,7 +54,7 @@ void afficherHanoi(THanoi *hanoi);
 // but : savoir si un disque est present sur une quille
 Bool disquePresent(THanoi *hanoi, int quille);
 
-// but : savoir si on est dans un niveau de hauteur valide (c-à-d entre 1 et le nombre total de disque, soit la hauteur max de disques sur une quille
+// but : savoir si on est dans un niveau de hauteur valide (c-à-d entre 1 et le nombre total de disque, soit la hauteur max de disques sur une quille)
 Bool hauteurValide(THanoi *hanoi, int n);
 
 // but : obtenir le niveau auquel on peut retirer un disque selon la colonne(quille) passée en paramètre

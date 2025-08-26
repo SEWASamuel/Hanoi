@@ -36,12 +36,10 @@ int obtenirDisque(THanoi *hanoi, int hauteur, int quille){
     return hanoi->objet[hauteurToLigne(hanoi,hauteur)][quilleToColonne(quille)];
 }
 
-// but : mettre une valeur dans une case de la matrice
 void modifierDisque(THanoi *hanoi, int hauteur, int quille, int valeur){
     hanoi->objet[hauteurToLigne(hanoi, hauteur)][quilleToColonne(quille)] = valeur;
 }
 
-// but : initialiser la matrice représentant la tour de hanoi
 void initTHanoiVide(THanoi *hanoi, int nbDisques){
     modifierNbDisques(hanoi, nbDisques);
     // ici , on parcourt toutes les cases de du objet de hanoi pour les mettre à vide (0)
@@ -52,7 +50,6 @@ void initTHanoiVide(THanoi *hanoi, int nbDisques){
     }
 }
 
-// but : initialiser la matrice représentant la tour de hanoi
 void initTHanoi(THanoi *hanoi, int nbDisques){
     modifierNbDisques(hanoi, nbDisques);
     initTHanoiVide(hanoi, nbDisques);
@@ -63,7 +60,6 @@ void initTHanoi(THanoi *hanoi, int nbDisques){
     }
 }
 
-// but : afficher l'objet dans la console
 void afficherHanoi(THanoi *hanoi){
     printf("\nTour de Hanoi :\n\n");
 
@@ -85,7 +81,6 @@ void afficherHanoi(THanoi *hanoi){
     sautDeLigne(1);
 }
 
-// but : savoir si un disque est present sur une quille
 Bool disquePresent(THanoi *hanoi, int quille){
     Bool present = FALSE;
     int i = obtenirNbDisques(hanoi);
@@ -133,7 +128,6 @@ Bool retraitDisquePossible(THanoi *hanoi, int quille){
     return (hauteurValide(hanoi, obtenirHauteurDisqueAuSommet(hanoi, quille)));
 }
 
-// but : savoir si une quille est pleine
 Bool quillePleine(THanoi *hanoi, int quille){
     // si la quille est pleine, c'est parce que le niveau de hauteur renvoyé par la fonction "obtenirHauteurDisqueAuSommet" est égale à NB_DISQUES
     return (obtenirHauteurDisqueAuSommet(hanoi, quille) == obtenirNbDisques(hanoi));
@@ -150,12 +144,10 @@ int obtenirHauteurPlacement(THanoi *hanoi, int quille){
     return i;
 }
 
-// savoir si un disque "a" est plus petit qu'un disque "b"
 Bool plusPetit(int a, int b){
     return a<b;
 }
 
-// but : verifier qu'on peut deplacer un disque donné à une destinstion donnée
 Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination){
 
     Bool possible = TRUE;
@@ -207,7 +199,6 @@ Bool deplacementPossible(THanoi *hanoi, int quilleDepart, int quilleDestination)
     return possible;
 }
 
-// but : deplacer le disque d'une quille à une autre
 void deplacerDisque(THanoi *hanoi, int quilleDepart, int quilleDestination){
 
     if(deplacementPossible(hanoi, quilleDepart, quilleDestination)){
@@ -282,7 +273,6 @@ void presentation(){
     afficherInstructions();
 }
 
-// but : faire jouer l'utilisateur
 void jouer(THanoi *hanoi){
     Bool partieEnCours = TRUE;
     int quilleDepart;
